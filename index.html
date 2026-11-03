@@ -30,6 +30,12 @@ body{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe
 .nav-btn:hover{background:#1e293b;color:white}
 .nav-btn.active{background:#2563eb;color:white}
 @media(max-width:767px){#sidebar{position:fixed;inset:0 auto 0 0;width:17rem;transform:translateX(-105%);transition:transform .2s;z-index:50}#sidebar.open{transform:translateX(0)}#mobile-scrim.show{display:block}main{padding:1rem!important}.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.period-btn{padding:.48rem .85rem;border-radius:.5rem;font-size:.75rem;font-weight:650;color:#64748b;transition:background .25s,color .25s,transform .25s}.period-btn.active{background:#2563eb;color:#fff;box-shadow:0 2px 7px rgba(37,99,235,.2)}.period-btn:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}
+.dash-hero{position:relative;overflow:hidden;animation:riseIn .55s ease both}.dash-hero:after{content:'';position:absolute;width:190px;height:190px;border-radius:50%;right:45px;top:-120px;background:radial-gradient(circle,rgba(59,130,246,.12),transparent 70%);pointer-events:none}.status-orbit{width:58px;height:58px;flex:0 0 58px;border-radius:18px;display:grid;place-items:center;background:#eff6ff;color:#2563eb;font-size:1.55rem;animation:softPulse 3s ease-in-out infinite}.dark .status-orbit{background:#334155;color:#93c5fd}.dash-icon{width:36px;height:36px;border-radius:11px;background:#f1f5f9;display:grid;place-items:center}.dark .dash-icon{background:#334155}.vital-tile{padding:12px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;min-width:0;animation:riseIn .35s ease both}.dark .vital-tile{background:#0f172a;border-color:#334155}.goal-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#3b82f6,#2563eb);transition:width .8s cubic-bezier(.2,.8,.2,1)}.action-item{display:flex;gap:11px;padding:11px;border-radius:11px;background:#f8fafc;border:1px solid #e2e8f0}.dark .action-item{background:#0f172a;border-color:#334155}.action-item.info>i{color:#2563eb}.action-item.tip>i{color:#d97706}.action-item.good>i{color:#059669}.chart-area{min-height:230px}.bar-chart{display:grid;grid-template-columns:repeat(30,minmax(0,1fr));gap:5px;align-items:end;min-height:190px;padding:12px 2px 0}.bar-column{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:190px;gap:7px}.bar-value{font-size:9px;color:#64748b;min-height:12px;white-space:nowrap;overflow:hidden;max-width:100%}.bar-track{height:140px;width:100%;max-width:24px;display:flex;align-items:flex-end;border-radius:7px;background:#f1f5f9;overflow:hidden}.dark .bar-track{background:#334155}.bar-fill{height:var(--bar-height);width:100%;border-radius:7px 7px 3px 3px;background:linear-gradient(180deg,#60a5fa,#2563eb);transform-origin:bottom;animation:barGrow .75s cubic-bezier(.2,.8,.2,1) both}.bar-label{font-size:9px;color:#64748b;white-space:nowrap;transform:rotate(-35deg);transform-origin:top center}.chart-empty{min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#94a3b8;text-align:center}.metric-card{animation:riseIn .45s ease both}.metric-card:nth-child(2){animation-delay:.04s}.metric-card:nth-child(3){animation-delay:.08s}.metric-card:nth-child(4){animation-delay:.12s}.metric-card:nth-child(5){animation-delay:.16s}.metric-card:nth-child(6){animation-delay:.2s}.metric-card:nth-child(7){animation-delay:.24s}.metric-card:nth-child(8){animation-delay:.28s}
+@keyframes riseIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}@keyframes barGrow{from{transform:scaleY(.05);opacity:.5}to{transform:scaleY(1);opacity:1}}@keyframes softPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@media(max-width:640px){.bar-chart{gap:2px}.bar-value{font-size:8px}.bar-label{font-size:8px}.bar-track{max-width:15px}.bar-column{height:170px}.bar-track{height:120px}}
+@media(prefers-reduced-motion:reduce){.dash-hero,.metric-card,.vital-tile,.bar-fill{animation:none!important}.status-orbit{animation:none!important}.goal-fill,.period-btn{transition:none!important}}
 </style>
 </head>
 <body class="min-h-full bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors">
@@ -61,19 +67,49 @@ body{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe
 <div id="backup-alert" class="hidden rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-950/30 dark:border-amber-800 text-amber-900 dark:text-amber-200 px-4 py-3 text-xs flex items-center justify-between gap-3"><span><i class="fa-solid fa-triangle-exclamation mr-2"></i>A recent downloadable backup is not recorded. Please export a backup regularly.</span><button onclick="showPage('backup')" class="underline font-semibold whitespace-nowrap">Backup now</button></div>
 
 <section id="page-dashboard" class="page space-y-6">
- <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2"><div><p class="text-xs uppercase tracking-wider font-semibold text-brand-600 dark:text-brand-400">Personal health overview</p><h2 class="text-2xl font-bold mt-1">Your health, at a glance</h2><p class="text-sm muted mt-1">A clear view of your daily wellness measurements and activity.</p></div><div class="text-xs muted" id="dashboard-date"></div></div>
+ <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+  <div><p class="text-xs uppercase tracking-wider font-semibold text-brand-600 dark:text-brand-400">Personal health overview</p><h2 class="text-2xl font-bold mt-1">Your health, in focus</h2><p class="text-sm muted mt-1">A clearer view of your activity, sleep and recorded health measurements.</p></div>
+  <div class="text-xs muted" id="dashboard-date"></div>
+ </div>
+ <div class="panel p-4 md:p-5 dash-hero">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+   <div><div class="text-xs font-semibold uppercase tracking-wide muted">Tracking overview</div><div id="health-status-title" class="text-xl font-bold mt-1">Building your health picture</div><p id="health-status-copy" class="text-sm muted mt-1">Import or enter your measurements to see your trends and practical next steps.</p></div>
+   <div class="status-orbit" aria-hidden="true"><i class="fa-solid fa-heart-pulse"></i></div>
+  </div>
+  <div class="mt-4 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900 p-3 text-xs text-blue-900 dark:text-blue-200"><i class="fa-solid fa-user-doctor mr-2"></i>This dashboard supports health tracking; it cannot diagnose whether you are healthy. Interpretation depends on age, symptoms, medical history, medicines and measurement conditions.</div>
+ </div>
+ <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+  <div><h3 class="font-bold text-base">Your activity summary</h3><p id="period-caption" class="text-xs muted mt-1">Today's recorded activity</p></div>
+  <div class="inline-flex rounded-lg bg-slate-100 dark:bg-slate-800 p-1 gap-1" role="group" aria-label="Summary period">
+   <button class="period-btn active" data-period="daily" onclick="setDashboardPeriod('daily')">Daily</button><button class="period-btn" data-period="weekly" onclick="setDashboardPeriod('weekly')">Weekly</button><button class="period-btn" data-period="monthly" onclick="setDashboardPeriod('monthly')">Monthly</button>
+  </div>
+ </div>
  <div class="grid metric-grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-  <div class="panel metric-card p-4"><div class="flex justify-between items-center"><span class="text-xs font-semibold muted uppercase">Steps today</span><span class="w-9 h-9 rounded-lg bg-blue-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400 grid place-items-center"><i class="fa-solid fa-shoe-prints"></i></span></div><div id="m-steps" class="text-2xl md:text-3xl font-bold mt-3">—</div><div class="text-xs muted mt-1">steps</div></div>
-  <div class="panel metric-card p-4"><div class="flex justify-between items-center"><span class="text-xs font-semibold muted uppercase">Active energy</span><span class="w-9 h-9 rounded-lg bg-amber-50 dark:bg-slate-700 text-amber-600 grid place-items-center"><i class="fa-solid fa-fire"></i></span></div><div id="m-energy" class="text-2xl md:text-3xl font-bold mt-3">—</div><div class="text-xs muted mt-1">kcal</div></div>
-  <div class="panel metric-card p-4"><div class="flex justify-between items-center"><span class="text-xs font-semibold muted uppercase">Walking distance</span><span class="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-slate-700 text-emerald-600 grid place-items-center"><i class="fa-solid fa-route"></i></span></div><div id="m-distance" class="text-2xl md:text-3xl font-bold mt-3">—</div><div class="text-xs muted mt-1">km</div></div>
-  <div class="panel metric-card p-4"><div class="flex justify-between items-center"><span class="text-xs font-semibold muted uppercase">Sleep</span><span class="w-9 h-9 rounded-lg bg-violet-50 dark:bg-slate-700 text-violet-600 grid place-items-center"><i class="fa-solid fa-moon"></i></span></div><div id="m-sleep" class="text-2xl md:text-3xl font-bold mt-3">—</div><div class="text-xs muted mt-1">hours</div></div>
+  <div class="panel metric-card p-4"><div class="flex justify-between items-center"><span class="text-xs font-semibold muted uppercase">Steps</span><span class="dash-icon text-blue-600"><i class="fa-solid fa-shoe-prints"></i></span></div><div id="m-steps" class="text-2xl md:text-3xl font-bold mt-3">—</div><div id="m-steps-note" class="text-xs muted mt-1">steps</div></div>
+  <div class="panel metric-card p-4"><div class="flex justify-between items-center"><span class="text-xs font-semibold muted uppercase">Active energy</span><span class="dash-icon text-amber-600"><i class="fa-solid fa-fire"></i></span></div><div id="m-energy" class="text-2xl md:text-3xl font-bold mt-3">—</div><div id="m-energy-note" class="text-xs muted mt-1">kcal</div></div>
+  <div class="panel metric-card p-4"><div class="flex justify-between items-center"><span class="text-xs font-semibold muted uppercase">Walking distance</span><span class="dash-icon text-emerald-600"><i class="fa-solid fa-route"></i></span></div><div id="m-distance" class="text-2xl md:text-3xl font-bold mt-3">—</div><div id="m-distance-note" class="text-xs muted mt-1">km</div></div>
+  <div class="panel metric-card p-4"><div class="flex justify-between items-center"><span class="text-xs font-semibold muted uppercase">Sleep</span><span class="dash-icon text-violet-600"><i class="fa-solid fa-moon"></i></span></div><div id="m-sleep" class="text-2xl md:text-3xl font-bold mt-3">—</div><div id="m-sleep-note" class="text-xs muted mt-1">hours</div></div>
+  <div class="panel metric-card p-4"><div class="flex justify-between items-center"><span class="text-xs font-semibold muted uppercase">Water</span><span class="dash-icon text-cyan-600"><i class="fa-solid fa-glass-water"></i></span></div><div id="m-water" class="text-2xl md:text-3xl font-bold mt-3">—</div><div class="text-xs muted mt-1">ml recorded</div></div>
+  <div class="panel metric-card p-4"><div class="flex justify-between items-center"><span class="text-xs font-semibold muted uppercase">Exercise time</span><span class="dash-icon text-rose-600"><i class="fa-solid fa-person-running"></i></span></div><div id="m-exercise" class="text-2xl md:text-3xl font-bold mt-3">—</div><div class="text-xs muted mt-1">minutes recorded</div></div>
+  <div class="panel metric-card p-4"><div class="flex justify-between items-center"><span class="text-xs font-semibold muted uppercase">Flights climbed</span><span class="dash-icon text-orange-600"><i class="fa-solid fa-stairs"></i></span></div><div id="m-flights" class="text-2xl md:text-3xl font-bold mt-3">—</div><div class="text-xs muted mt-1">flights</div></div>
+  <div class="panel metric-card p-4"><div class="flex justify-between items-center"><span class="text-xs font-semibold muted uppercase">Resting heart rate</span><span class="dash-icon text-pink-600"><i class="fa-solid fa-heart"></i></span></div><div id="m-rhr" class="text-2xl md:text-3xl font-bold mt-3">—</div><div class="text-xs muted mt-1">bpm · latest recorded</div></div>
  </div>
  <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
-  <div class="panel p-5 xl:col-span-2"><div class="flex items-center justify-between mb-4"><div><h3 class="font-bold text-base">Latest health measurements</h3><p class="text-xs muted mt-1">Most recently entered or imported values</p></div><button onclick="showPage('records')" class="text-xs font-semibold text-brand-600 hover:underline">View records</button></div><div id="latest-vitals" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div></div>
-  <div class="panel p-5"><h3 class="font-bold text-base">Daily goals</h3><p class="text-xs muted mt-1 mb-4">Progress based on your configured targets</p><div id="goal-progress" class="space-y-4"></div><button onclick="showPage('settings')" class="text-xs text-brand-600 font-semibold mt-4 hover:underline">Configure goals</button></div>
+  <div class="panel p-5 xl:col-span-2">
+   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3"><div><h3 class="font-bold text-base">Activity trend</h3><p class="text-xs muted mt-1">Daily totals across the selected period</p></div><select id="dashboard-chart-metric" class="field max-w-48" onchange="renderDashboardChart()"><option value="Steps">Steps</option><option value="Sleep">Sleep hours</option><option value="Active Energy">Active energy</option><option value="Walking Distance">Walking distance</option><option value="Water">Water intake</option><option value="Exercise Minutes">Exercise minutes</option></select></div>
+   <div id="dashboard-chart" class="chart-area" aria-live="polite"></div>
+  </div>
+  <div class="panel p-5"><h3 class="font-bold text-base">Personal goals</h3><p class="text-xs muted mt-1 mb-4">Progress for the selected period</p><div id="goal-progress" class="space-y-4"></div><button onclick="showPage('settings')" class="text-xs text-brand-600 font-semibold mt-4 hover:underline">Adjust goals <i class="fa-solid fa-arrow-right ml-1"></i></button></div>
  </div>
- <div class="panel p-5"><div class="flex items-center justify-between mb-3"><h3 class="font-bold text-base">Recent entries</h3><button onclick="showPage('trends')" class="text-xs text-brand-600 font-semibold">View history</button></div><div id="recent-list" class="overflow-x-auto"></div></div>
- <div class="rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900 p-4 text-xs text-blue-900 dark:text-blue-200"><i class="fa-solid fa-circle-info mr-2"></i>Health Monitor is a personal tracking tool, not a diagnostic device. Review concerning readings with a qualified healthcare professional.</div>
+ <div class="panel p-5">
+  <div class="flex flex-wrap items-center justify-between gap-2 mb-4"><div><h3 class="font-bold text-base">Health measurements</h3><p class="text-xs muted mt-1">Latest available values across all recorded categories</p></div><button onclick="showPage('records')" class="text-xs font-semibold text-brand-600 hover:underline">Manage records <i class="fa-solid fa-arrow-right ml-1"></i></button></div>
+  <div id="latest-vitals" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3"></div>
+ </div>
+ <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+  <div class="panel p-5"><h3 class="font-bold text-base mb-1"><i class="fa-solid fa-list-check text-brand-600 mr-2"></i>Suggested next steps</h3><p class="text-xs muted mb-3">Practical reminders based on the information entered—not a diagnosis.</p><div id="health-actions" class="space-y-3"></div></div>
+  <div class="panel p-5"><div class="flex items-center justify-between gap-2 mb-3"><div><h3 class="font-bold text-base">Recent entries</h3><p class="text-xs muted mt-1">Latest imported and manual records</p></div><button onclick="showPage('trends')" class="text-xs text-brand-600 font-semibold">Full history</button></div><div id="recent-list" class="overflow-x-auto"></div></div>
+ </div>
+ <div class="rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 p-4 text-xs muted leading-relaxed"><i class="fa-solid fa-shield-heart mr-2 text-brand-600"></i><strong>Safety:</strong> Do not use this app for emergencies or change medicines based on its suggestions. If you have chest pain, severe breathing difficulty, fainting, sudden weakness or other severe symptoms, seek urgent medical care.</div>
 </section>
 
 <section id="page-records" class="page hidden space-y-5">
@@ -161,17 +197,73 @@ function dailySnapshot(){try{const day=today();let snaps=JSON.parse(localStorage
 function renderAll(){renderDashboard();renderRecords();renderActivity();renderTrends();renderBackup();renderSettings()}
 function metricToday(type){return db.activities.filter(a=>a.date===today()&&a.type===type).reduce((s,a)=>s+Number(a.value||0),0)}
 function latestRecord(type){return db.records.filter(r=>r.type===type).sort((a,b)=>b.date.localeCompare(a.date))[0]}
+let dashboardPeriod='daily';
+let dashboardChartMetric='Steps';
+function setDashboardPeriod(period){dashboardPeriod=period;document.querySelectorAll('.period-btn').forEach(b=>b.classList.toggle('active',b.dataset.period===period));renderDashboard();}
+function dashboardWindow(){
+ const now=new Date(),end=new Date(now.getFullYear(),now.getMonth(),now.getDate()),days=dashboardPeriod==='daily'?1:dashboardPeriod==='weekly'?7:30;
+ const start=new Date(end);start.setDate(start.getDate()-days+1);
+ const key=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+ return {start:key(start),end:key(end),days,startDate:start,endDate:end};
+}
+function periodActivities(type,window){return db.activities.filter(a=>a.type===type&&a.date.slice(0,10)>=window.start&&a.date.slice(0,10)<=window.end);}
+function sumActivity(type,window){return periodActivities(type,window).reduce((sum,a)=>sum+Number(a.value||0),0);}
+function avgPerRecordedDay(type,window){const rows=periodActivities(type,window);const days=new Set(rows.map(x=>x.date.slice(0,10))).size;return days?rows.reduce((s,x)=>s+Number(x.value||0),0)/days:0;}
 function renderDashboard(){
- document.getElementById('today-label').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
- document.getElementById('dashboard-date').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
- const steps=metricToday('Steps'),energy=metricToday('Active Energy'),dist=metricToday('Walking Distance'),sleep=metricToday('Sleep');
- document.getElementById('m-steps').textContent=steps?fmt(steps):'—';document.getElementById('m-energy').textContent=energy?fmt(energy):'—';document.getElementById('m-distance').textContent=dist?fmt(dist,2):'—';document.getElementById('m-sleep').textContent=sleep?fmt(sleep,1):'—';
- const types=[['Blood Pressure','mmHg'],['Blood Glucose','mg/dL'],['Heart Rate','bpm'],['SpO₂','%'],['Temperature','°C'],['Weight','kg']];
- document.getElementById('latest-vitals').innerHTML=types.map(([t,u])=>{const r=latestRecord(t);return '<div class="rounded-lg bg-slate-50 dark:bg-slate-700/50 p-3"><div class="text-xs muted">'+t+'</div><div class="text-lg font-bold mt-1">'+(r?escapeHTML(r.value)+' <span class="text-xs font-normal muted">'+escapeHTML(r.unit||u)+'</span>':'—')+'</div><div class="text-[10px] muted mt-1">'+(r?new Date(r.date).toLocaleString():'No entry yet')+'</div></div>'}).join('');
- const goals=[['Steps',steps,db.goals.steps,'steps'],['Water',metricToday('Water'),db.goals.water,'ml'],['Sleep',sleep,db.goals.sleep,'hours']];
- document.getElementById('goal-progress').innerHTML=goals.map(([n,v,g,u])=>{let p=Math.min(100,g?100*v/g:0);return '<div><div class="flex justify-between text-xs mb-1"><span class="font-semibold">'+n+'</span><span class="muted">'+fmt(v,1)+' / '+fmt(g,1)+' '+u+'</span></div><div class="h-2 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden"><div class="h-full bg-brand-600 rounded-full" style="width:'+p+'%"></div></div></div>'}).join('');
- const all=[...db.records.map(x=>({...x,kind:'Measurement'})),...db.activities.map(x=>({...x,kind:'Activity'}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,7);
- document.getElementById('recent-list').innerHTML=tableHTML(['Type','Category','Value','Date'],all.map(x=>[x.kind,x.type,String(x.value)+' '+(x.unit||''),new Date(x.date).toLocaleString()]));
+ const now=new Date(),w=dashboardWindow(),periodName=dashboardPeriod==='daily'?'Today':dashboardPeriod==='weekly'?'Last 7 days':'Last 30 days';
+ document.getElementById('today-label').textContent=now.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+ document.getElementById('dashboard-date').textContent=now.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+ document.getElementById('period-caption').textContent=periodName+' · '+w.start+' to '+w.end;
+ const daily=dashboardPeriod==='daily';
+ const steps=sumActivity('Steps',w),energy=sumActivity('Active Energy',w),dist=sumActivity('Walking Distance',w),sleep=avgPerRecordedDay('Sleep',w),water=avgPerRecordedDay('Water',w),exercise=sumActivity('Exercise Minutes',w),flights=sumActivity('Flights Climbed',w);
+ const rhr=latestRecord('Resting Heart Rate');
+ const set=(id,value,note)=>{document.getElementById(id).textContent=value;const n=document.getElementById(id+'-note');if(n&&note)n.textContent=note};
+ set('m-steps',steps?fmt(daily?steps:steps/w.days):'—',daily?'steps':'average steps/day');
+ set('m-energy',energy?fmt(daily?energy:energy/w.days):'—',daily?'kcal':'average kcal/day');
+ set('m-distance',dist?fmt(daily?dist:dist/w.days,2):'—',daily?'km':'average km/day');
+ set('m-sleep',sleep?fmt(sleep,1):'—',daily?'hours':'hours per recorded day');
+ set('m-water',water?fmt(water,0):'—','ml per recorded day');
+ set('m-exercise',exercise?fmt(exercise,0):'—','minutes total');
+ set('m-flights',flights?fmt(flights,0):'—','flights total');
+ set('m-rhr',rhr?fmt(rhr.value,0):'—',rhr?'latest · '+new Date(rhr.date).toLocaleDateString():'no entry yet');
+ const vitals=db.records.slice().sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+ const types=[...new Set(vitals.map(r=>r.type))];
+ const known=['Blood Pressure','Blood Glucose','Heart Rate','Resting Heart Rate','SpO₂','Temperature','Weight','Waist','Height','Respiratory Rate','Systolic BP','Diastolic BP'];
+ const allTypes=[...known.filter(t=>types.includes(t)),...types.filter(t=>!known.includes(t))];
+ document.getElementById('latest-vitals').innerHTML=allTypes.length?allTypes.map(t=>{const r=vitals.find(x=>x.type===t);return '<div class="vital-tile"><div class="text-xs muted">'+escapeHTML(t)+'</div><div class="text-lg font-bold mt-1">'+escapeHTML(r.value)+' <span class="text-xs font-normal muted">'+escapeHTML(r.unit||'')+'</span></div><div class="text-[10px] muted mt-1">'+new Date(r.date).toLocaleString()+'</div></div>'}).join(''):'<div class="text-sm muted col-span-full py-4">No health measurements recorded yet. Add them under Health Records.</div>';
+ const goalItems=[['Steps',daily?steps:steps/w.days,db.goals.steps,'steps/day'],['Sleep',sleep,db.goals.sleep,'hours/recorded day'],['Water',water,db.goals.water,'ml/recorded day']];
+ document.getElementById('goal-progress').innerHTML=goalItems.map(([name,val,target,unit])=>{const pct=target?Math.max(0,Math.min(100,val/target*100)):0;return '<div class="goal-row"><div class="flex justify-between gap-2 text-xs mb-1"><span class="font-semibold">'+name+'</span><span class="muted">'+(val?fmt(val,1):'—')+' / '+fmt(target,1)+' '+unit+'</span></div><div class="h-2 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden"><div class="goal-fill" style="width:'+pct+'%"></div></div></div>'}).join('');
+ const all=[...db.records.map(x=>({...x,kind:'Measurement'})),...db.activities.map(x=>({...x,kind:'Activity'}))].sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,8);
+ document.getElementById('recent-list').innerHTML=tableHTML(['Type','Category','Value','Date'],all.map(x=>[x.kind,escapeHTML(x.type),escapeHTML(String(x.value))+' '+escapeHTML(x.unit||''),escapeHTML(String(x.date).slice(0,16).replace('T',' '))]));
+ renderHealthActions(w,steps,sleep,water,types);
+ renderDashboardChart();
+}
+function renderHealthActions(w,steps,sleep,water,types){
+ const actions=[];
+ if(!db.activities.length&&!db.records.length){actions.push(['info','Start with baseline records','Add a few days of steps, sleep, blood pressure (if measured), weight and other values you already track.']);}
+ else{
+  if(!periodActivities('Steps',w).length)actions.push(['info','Steps are missing','Check that Apple Health step data imported, or enter your daily total.']);
+  else if((dashboardPeriod==='daily'?steps:steps/w.days)<db.goals.steps)actions.push(['tip','Build movement gradually','Your recorded step average is below your personal goal. Add comfortable walking in short sessions, increasing gradually.']);
+  if(!periodActivities('Sleep',w).length)actions.push(['info','Sleep data is missing','Import sleep from Apple Health or enter your sleep duration to see a trend.']);
+  else if(sleep<db.goals.sleep)actions.push(['tip','Review your sleep routine','Your recorded sleep average is below your own target. A consistent bedtime and wake time may help.']);
+  if(!periodActivities('Water',w).length)actions.push(['info','Hydration data is missing','If you want hydration tracking, record water intake. Needs vary with activity, climate and medical conditions.']);
+  if(!types.length)actions.push(['info','Add health measurements','Record measurements recommended by your clinician. Avoid measuring or interpreting values without context.']);
+  if(actions.length===0)actions.push(['good','Keep tracking consistently','Your selected activity goals are being met in the data recorded. This does not establish overall medical health.']);
+ }
+ const icons={info:'fa-circle-info',tip:'fa-lightbulb',good:'fa-circle-check'};
+ document.getElementById('health-actions').innerHTML=actions.map(([kind,title,copy])=>'<div class="action-item '+kind+'"><i class="fa-solid '+icons[kind]+' mt-0.5"></i><div><div class="text-sm font-semibold">'+title+'</div><p class="text-xs muted mt-1">'+copy+'</p></div></div>').join('');
+ const title=document.getElementById('health-status-title'),copy=document.getElementById('health-status-copy');
+ if(!db.activities.length&&!db.records.length){title.textContent='Not enough data yet';copy.textContent='Start recording or importing data. The app will show patterns as your history grows.';}
+ else if(actions.some(a=>a[0]==='info')){title.textContent='Your health picture is incomplete';copy.textContent='Some important tracking information is missing. Review the suggested next steps below.';}
+ else{title.textContent='Your tracking is progressing';copy.textContent='Some selected activity goals are being met. This is a tracking summary, not a medical clearance.';}
+}
+function renderDashboardChart(){
+ const host=document.getElementById('dashboard-chart');if(!host)return;
+ const metric=document.getElementById('dashboard-chart-metric')?.value||dashboardChartMetric;dashboardChartMetric=metric;
+ const w=dashboardWindow(),rows=[];
+ for(let i=0;i<w.days;i++){const d=new Date(w.startDate);d.setDate(d.getDate()+i);const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');const value=db.activities.filter(a=>a.type===metric&&a.date.slice(0,10)===key).reduce((s,a)=>s+Number(a.value||0),0);rows.push({key,label:d.toLocaleDateString(undefined,{day:'numeric',month:'short'}),value});}
+ const max=Math.max(1,...rows.map(x=>x.value)),any=rows.some(x=>x.value>0);
+ host.innerHTML=any?'<div class="bar-chart" role="img" aria-label="'+escapeHTML(metric)+' by day">'+rows.map(x=>'<div class="bar-column" title="'+x.key+': '+fmt(x.value,1)+'"><div class="bar-value">'+(x.value?fmt(x.value,0):'')+'</div><div class="bar-track"><div class="bar-fill" style="--bar-height:'+Math.max(x.value?3:0,x.value/max*100)+'%"></div></div><div class="bar-label">'+x.label+'</div></div>').join('')+'</div><div class="text-xs muted mt-3">Total: <strong>'+fmt(rows.reduce((s,x)=>s+x.value,0),1)+'</strong> '+(metric==='Steps'?'steps':metric==='Sleep'?'hours':metric==='Walking Distance'?'km':metric==='Water'?'ml':metric==='Exercise Minutes'?'minutes':'kcal')+'</div>':'<div class="chart-empty"><i class="fa-solid fa-chart-column text-2xl mb-2"></i><div class="text-sm font-semibold">No '+escapeHTML(metric.toLowerCase())+' data for this period</div><p class="text-xs muted mt-1">Import Apple Health data or add an activity entry to build your chart.</p></div>';
 }
 function tableHTML(headers,rows){if(!rows.length)return '<div class="text-sm muted py-5 text-center">No records available yet.</div>';return '<table class="w-full text-left text-xs min-w-[560px]"><thead class="bg-slate-50 dark:bg-slate-700/60 text-slate-500 dark:text-slate-300 uppercase"><tr>'+headers.map(h=>'<th class="p-3 font-semibold">'+h+'</th>').join('')+'</tr></thead><tbody class="divide-y divide-slate-100 dark:divide-slate-700">'+rows.map(row=>'<tr class="hover:bg-slate-50 dark:hover:bg-slate-700/40">'+row.map(v=>'<td class="p-3">'+v+'</td>').join('')+'</tr>').join('')+'</tbody></table>'}
 function renderRecords(){const f=document.getElementById('record-filter')?.value||'';const rows=db.records.filter(r=>!f||r.type===f).sort((a,b)=>b.date.localeCompare(a.date));document.getElementById('records-table').innerHTML=tableHTML(['Measurement','Value','Date & time','Notes',''],rows.map(r=>[escapeHTML(r.type),escapeHTML(r.value)+' '+escapeHTML(r.unit||''),new Date(r.date).toLocaleString(),escapeHTML(r.note||'—'),'<button class="text-rose-600" onclick="deleteItem(\'records\',\''+r.id+'\')"><i class="fa-solid fa-trash"></i></button>']))}
