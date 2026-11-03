@@ -1,104 +1,218 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#10243a"><title>Health Monitor</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1e3a8a">
+<title>Health Monitor</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class',theme:{extend:{colors:{brand:{50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a'}}}}};</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root{--bg:#f3f6fa;--card:#fff;--ink:#172638;--muted:#6b7b8e;--blue:#2563eb;--line:#e5ebf2;--green:#16865b;--red:#c24141;--shadow:0 8px 28px #1b35500d}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}.top{background:linear-gradient(120deg,#10243a,#17466a);color:white;padding:24px max(18px,calc((100% - 1120px)/2)) 22px}.top h1{margin:0;font-size:26px;letter-spacing:.2px}.top p{margin:4px 0 0;color:#c8d8e8}.wrap{max-width:1120px;margin:auto;padding:18px}.tabs{display:flex;gap:8px;overflow:auto;padding:3px 0 14px}.tabs button{white-space:nowrap;border:1px solid var(--line);background:#fff;color:#33465b;border-radius:22px;padding:9px 15px;cursor:pointer}.tabs button.active{background:#173e62;color:#fff;border-color:#173e62}.page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:13px}.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:16px;box-shadow:var(--shadow);margin-bottom:14px}.metric small,.muted{color:var(--muted)}.metric strong{display:block;font-size:26px;margin:7px 0 1px}.metric .unit{font-size:13px;font-weight:500;color:var(--muted)}h2{font-size:18px;margin:0 0 13px}h3{font-size:15px;margin:0 0 10px}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.field{display:flex;flex-direction:column;gap:5px;flex:1;min-width:145px}label{font-size:13px;color:#526477}input,select,textarea{width:100%;border:1px solid #ccd6e2;border-radius:9px;padding:10px;background:white;color:var(--ink);font:inherit}button.primary,.primary{background:var(--blue);color:white;border:0;border-radius:9px;padding:10px 15px;cursor:pointer;font:inherit}button.secondary{background:#edf3fa;color:#24415e;border:1px solid #d9e4ef;border-radius:9px;padding:9px 13px;cursor:pointer;font:inherit}button.danger{background:#fff1f1;color:#a52e2e;border:1px solid #f2d0d0;border-radius:9px;padding:9px 13px;cursor:pointer;font:inherit}.hint{font-size:12px;color:var(--muted)}.status{padding:10px 12px;background:#edf7f1;border-radius:9px;color:#176340;margin:10px 0}.warn{background:#fff7e8;color:#80520b}.table{width:100%;border-collapse:collapse;font-size:13px}.table th,.table td{text-align:left;border-bottom:1px solid var(--line);padding:9px 6px}.table th{color:var(--muted);font-weight:600}.empty{padding:18px;text-align:center;color:var(--muted)}.bar{height:8px;border-radius:9px;background:#eaf0f6;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:#3b82f6;border-radius:9px}.footer{color:var(--muted);font-size:12px;padding:8px 2px 30px}canvas{width:100%;height:180px}.hide{display:none!important}
-@media(max-width:600px){.top{padding:20px 17px}.wrap{padding:13px}.metric strong{font-size:23px}.row .field{min-width:calc(50% - 8px)}}
-</style></head>
-<body>
-<header class="top"><h1>Health Monitor</h1><p>Your personal health records, activity and wellness trends</p></header>
-<main class="wrap">
-<nav class="tabs" aria-label="Main sections">
-<button class="active" data-tab="dashboard">Dashboard</button><button data-tab="vitals">Vitals</button><button data-tab="nutrition">Nutrition</button><button data-tab="activity">Activity & Sleep</button><button data-tab="body">Body & Progress</button><button data-tab="history">History</button><button data-tab="backup">Backup & Settings</button>
-</nav>
-<section id="dashboard" class="page active">
-<div class="row" style="justify-content:space-between;margin-bottom:12px"><div><h2 style="margin:0">Today's overview</h2><span class="muted" id="today"></span></div><button class="secondary" id="quickAdd">＋ Add a health record</button></div>
-<div class="grid" id="summary"></div>
-<div class="card"><h2>Latest health records</h2><div id="latest" class="empty">No records yet. Add your first measurement in Vitals or Activity.</div></div>
-<div class="card"><h2>Daily notes</h2><textarea id="notes" rows="3" placeholder="How are you feeling today? Add any notes..."></textarea><div class="row" style="justify-content:flex-end;margin-top:8px"><button class="primary" id="saveNotes">Save notes</button></div></div>
+:root{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:light}
+html.dark{color-scheme:dark}
+*{box-sizing:border-box}
+body{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:5px}.dark ::-webkit-scrollbar-thumb{background:#475569}
+.tab-active{background:#2563eb!important;color:#fff!important}.dark .tab-active{background:#3b82f6!important;color:#fff!important}
+.metric-card{transition:transform .16s ease,box-shadow .16s ease}.metric-card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(15,23,42,.08)}
+.field{width:100%;border:1px solid #cbd5e1;border-radius:.55rem;padding:.62rem .75rem;background:#f8fafc;color:#1e293b;font-size:.82rem;outline:none}
+.dark .field{background:#334155;border-color:#475569;color:#f8fafc}
+.field:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.13)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-radius:.55rem;padding:.62rem .9rem;font-size:.78rem;font-weight:650;transition:.15s}
+.btn-primary{background:#2563eb;color:white}.btn-primary:hover{background:#1d4ed8}
+.btn-secondary{background:#e2e8f0;color:#334155}.dark .btn-secondary{background:#475569;color:#f1f5f9}
+.btn-danger{background:#e11d48;color:#fff}
+.panel{background:#fff;border:1px solid #e2e8f0;border-radius:.85rem;box-shadow:0 1px 3px rgba(15,23,42,.04)}
+.dark .panel{background:#1e293b;border-color:#334155}
+.muted{color:#64748b}.dark .muted{color:#94a3b8}
+.nav-btn{display:flex;align-items:center;gap:.75rem;width:100%;padding:.72rem .85rem;border-radius:.6rem;color:#cbd5e1;font-size:.83rem;text-align:left}
+.nav-btn:hover{background:#1e293b;color:white}
+.nav-btn.active{background:#2563eb;color:white}
+@media(max-width:767px){#sidebar{position:fixed;inset:0 auto 0 0;width:17rem;transform:translateX(-105%);transition:transform .2s;z-index:50}#sidebar.open{transform:translateX(0)}#mobile-scrim.show{display:block}main{padding:1rem!important}.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body class="min-h-full bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors">
+<div id="mobile-scrim" onclick="toggleMenu()" class="hidden fixed inset-0 bg-slate-950/50 z-40"></div>
+<div class="min-h-screen flex">
+<aside id="sidebar" class="w-64 shrink-0 bg-slate-900 text-slate-300 flex flex-col min-h-screen">
+ <div class="p-4 border-b border-slate-800 flex items-center gap-3">
+  <div class="w-10 h-10 rounded-xl bg-brand-600 text-white grid place-items-center shadow"><i class="fa-solid fa-heart-pulse text-lg"></i></div>
+  <div><div class="font-bold text-white text-base leading-tight">Health Monitor</div><div class="text-xs text-slate-400">Personal wellness dashboard</div></div>
+  <button onclick="toggleMenu()" class="ml-auto md:hidden text-slate-400"><i class="fa-solid fa-xmark"></i></button>
+ </div>
+ <nav class="p-3 space-y-1 flex-1">
+  <button class="nav-btn active" data-page="dashboard" onclick="showPage('dashboard')"><i class="fa-solid fa-chart-pie w-5 text-center"></i>Dashboard</button>
+  <button class="nav-btn" data-page="records" onclick="showPage('records')"><i class="fa-solid fa-notes-medical w-5 text-center"></i>Health Records</button>
+  <button class="nav-btn" data-page="activity" onclick="showPage('activity')"><i class="fa-solid fa-person-walking w-5 text-center"></i>Activity & Sleep</button>
+  <button class="nav-btn" data-page="trends" onclick="showPage('trends')"><i class="fa-solid fa-chart-line w-5 text-center"></i>History & Trends</button>
+  <button class="nav-btn" data-page="apple" onclick="showPage('apple')"><i class="fa-brands fa-apple w-5 text-center"></i>Apple Health Import</button>
+  <button class="nav-btn" data-page="backup" onclick="showPage('backup')"><i class="fa-solid fa-database w-5 text-center"></i>Backup & Restore</button>
+  <button class="nav-btn" data-page="settings" onclick="showPage('settings')"><i class="fa-solid fa-gear w-5 text-center"></i>Settings</button>
+ </nav>
+ <div class="p-4 border-t border-slate-800 text-xs text-slate-400 leading-relaxed"><i class="fa-solid fa-shield-halved mr-1 text-emerald-400"></i> Your records stay in this browser. They are not uploaded to GitHub.</div>
+</aside>
+<div class="flex-1 min-w-0 flex flex-col">
+<header class="sticky top-0 z-30 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 md:px-6 py-3 flex items-center justify-between shadow-sm">
+ <div class="flex items-center gap-3"><button onclick="toggleMenu()" class="md:hidden text-slate-600 dark:text-slate-300 p-2"><i class="fa-solid fa-bars text-lg"></i></button><div><h1 id="page-title" class="text-lg md:text-xl font-bold tracking-tight">Dashboard</h1><p class="text-xs muted hidden sm:block" id="today-label"></p></div></div>
+ <div class="flex items-center gap-2"><span id="save-status" class="hidden sm:inline text-xs muted">Local storage active</span><button onclick="toggleTheme()" class="btn btn-secondary" title="Toggle light/dark theme"><i id="theme-icon" class="fa-solid fa-moon"></i><span class="hidden sm:inline">Theme</span></button><button onclick="showPage('backup')" class="btn btn-primary"><i class="fa-solid fa-cloud-arrow-down"></i><span class="hidden sm:inline">Backup</span></button></div>
+</header>
+<main class="flex-1 p-4 md:p-6 max-w-[1600px] w-full mx-auto space-y-6">
+<div id="backup-alert" class="hidden rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-950/30 dark:border-amber-800 text-amber-900 dark:text-amber-200 px-4 py-3 text-xs flex items-center justify-between gap-3"><span><i class="fa-solid fa-triangle-exclamation mr-2"></i>A recent downloadable backup is not recorded. Please export a backup regularly.</span><button onclick="showPage('backup')" class="underline font-semibold whitespace-nowrap">Backup now</button></div>
+
+<section id="page-dashboard" class="page space-y-6">
+ <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2"><div><p class="text-xs uppercase tracking-wider font-semibold text-brand-600 dark:text-brand-400">Personal health overview</p><h2 class="text-2xl font-bold mt-1">Your health, at a glance</h2><p class="text-sm muted mt-1">A clear view of your daily wellness measurements and activity.</p></div><div class="text-xs muted" id="dashboard-date"></div></div>
+ <div class="grid metric-grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+  <div class="panel metric-card p-4"><div class="flex justify-between items-center"><span class="text-xs font-semibold muted uppercase">Steps today</span><span class="w-9 h-9 rounded-lg bg-blue-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400 grid place-items-center"><i class="fa-solid fa-shoe-prints"></i></span></div><div id="m-steps" class="text-2xl md:text-3xl font-bold mt-3">—</div><div class="text-xs muted mt-1">steps</div></div>
+  <div class="panel metric-card p-4"><div class="flex justify-between items-center"><span class="text-xs font-semibold muted uppercase">Active energy</span><span class="w-9 h-9 rounded-lg bg-amber-50 dark:bg-slate-700 text-amber-600 grid place-items-center"><i class="fa-solid fa-fire"></i></span></div><div id="m-energy" class="text-2xl md:text-3xl font-bold mt-3">—</div><div class="text-xs muted mt-1">kcal</div></div>
+  <div class="panel metric-card p-4"><div class="flex justify-between items-center"><span class="text-xs font-semibold muted uppercase">Walking distance</span><span class="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-slate-700 text-emerald-600 grid place-items-center"><i class="fa-solid fa-route"></i></span></div><div id="m-distance" class="text-2xl md:text-3xl font-bold mt-3">—</div><div class="text-xs muted mt-1">km</div></div>
+  <div class="panel metric-card p-4"><div class="flex justify-between items-center"><span class="text-xs font-semibold muted uppercase">Sleep</span><span class="w-9 h-9 rounded-lg bg-violet-50 dark:bg-slate-700 text-violet-600 grid place-items-center"><i class="fa-solid fa-moon"></i></span></div><div id="m-sleep" class="text-2xl md:text-3xl font-bold mt-3">—</div><div class="text-xs muted mt-1">hours</div></div>
+ </div>
+ <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+  <div class="panel p-5 xl:col-span-2"><div class="flex items-center justify-between mb-4"><div><h3 class="font-bold text-base">Latest health measurements</h3><p class="text-xs muted mt-1">Most recently entered or imported values</p></div><button onclick="showPage('records')" class="text-xs font-semibold text-brand-600 hover:underline">View records</button></div><div id="latest-vitals" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div></div>
+  <div class="panel p-5"><h3 class="font-bold text-base">Daily goals</h3><p class="text-xs muted mt-1 mb-4">Progress based on your configured targets</p><div id="goal-progress" class="space-y-4"></div><button onclick="showPage('settings')" class="text-xs text-brand-600 font-semibold mt-4 hover:underline">Configure goals</button></div>
+ </div>
+ <div class="panel p-5"><div class="flex items-center justify-between mb-3"><h3 class="font-bold text-base">Recent entries</h3><button onclick="showPage('trends')" class="text-xs text-brand-600 font-semibold">View history</button></div><div id="recent-list" class="overflow-x-auto"></div></div>
+ <div class="rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900 p-4 text-xs text-blue-900 dark:text-blue-200"><i class="fa-solid fa-circle-info mr-2"></i>Health Monitor is a personal tracking tool, not a diagnostic device. Review concerning readings with a qualified healthcare professional.</div>
 </section>
-<section id="vitals" class="page">
-<div class="card"><h2>Record a vital measurement</h2><form id="vitalForm"><div class="row">
-<div class="field"><label for="vdate">Date and time</label><input id="vdate" type="datetime-local" required></div>
-<div class="field"><label for="vtype">Measurement</label><select id="vtype"><option value="Blood pressure">Blood pressure</option><option value="Blood glucose">Blood glucose</option><option value="SpO₂">SpO₂</option><option value="Temperature">Temperature</option><option value="Pulse">Pulse</option></select></div>
-<div class="field" id="vvalueWrap"><label for="vvalue">Value</label><input id="vvalue" type="number" step="any" required placeholder="Enter value"></div>
-<div class="field hide" id="sysWrap"><label for="vsys">Systolic (mmHg)</label><input id="vsys" type="number" min="1"></div><div class="field hide" id="diaWrap"><label for="vdia">Diastolic (mmHg)</label><input id="vdia" type="number" min="1"></div>
-<div class="field"><label for="vunit">Unit</label><select id="vunit"><option>mmHg</option><option>mg/dL</option><option>mmol/L</option><option>%</option><option>°C</option><option>bpm</option></select></div>
-<div class="field"><label for="vnote">Notes (optional)</label><input id="vnote" placeholder="Before meal, after walk..."></div></div><p class="hint">Choose Blood pressure to enter systolic and diastolic values separately.</p><button class="primary">Save measurement</button></form></div>
-<div class="card"><h2>Recent vital measurements</h2><div id="vitalList" class="empty">No measurements recorded.</div></div>
+
+<section id="page-records" class="page hidden space-y-5">
+ <div><h2 class="text-2xl font-bold">Health Records</h2><p class="text-sm muted mt-1">Record vital signs and body measurements with dates and notes.</p></div>
+ <div class="panel p-5">
+  <h3 class="font-bold mb-4"><i class="fa-solid fa-plus-circle text-brand-600 mr-2"></i>Add a health measurement</h3>
+  <form id="record-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+   <div><label class="text-xs font-semibold block mb-1">Measurement</label><select class="field" id="r-type"><option value="Blood Pressure">Blood Pressure</option><option value="Blood Glucose">Blood Glucose</option><option value="Heart Rate">Heart Rate</option><option value="SpO₂">Blood Oxygen (SpO₂)</option><option value="Temperature">Temperature</option><option value="Weight">Weight</option><option value="Waist">Waist Circumference</option><option value="Height">Height</option></select></div>
+   <div><label class="text-xs font-semibold block mb-1">Value</label><input class="field" id="r-value" placeholder="e.g. 120/80 or 72" required></div>
+   <div><label class="text-xs font-semibold block mb-1">Unit</label><select class="field" id="r-unit"><option>mmHg</option><option>mg/dL</option><option>bpm</option><option>%</option><option>°C</option><option>kg</option><option>cm</option></select></div>
+   <div><label class="text-xs font-semibold block mb-1">Date & time</label><input class="field" type="datetime-local" id="r-date" required></div>
+   <div class="sm:col-span-2 lg:col-span-3"><label class="text-xs font-semibold block mb-1">Notes (optional)</label><input class="field" id="r-note" placeholder="Context, symptoms, or other notes"></div>
+   <div class="flex items-end"><button class="btn btn-primary w-full" type="submit"><i class="fa-solid fa-floppy-disk"></i>Save measurement</button></div>
+  </form>
+ </div>
+ <div class="panel p-5"><div class="flex flex-wrap items-center justify-between gap-3 mb-3"><h3 class="font-bold">Measurement history</h3><select id="record-filter" class="field max-w-52" onchange="renderRecords()"><option value="">All measurements</option><option>Blood Pressure</option><option>Blood Glucose</option><option>Heart Rate</option><option>SpO₂</option><option>Temperature</option><option>Weight</option><option>Waist</option><option>Height</option></select></div><div id="records-table" class="overflow-x-auto"></div></div>
 </section>
-<section id="nutrition" class="page">
-<div class="card"><h2>Food and water log</h2><form id="foodForm"><div class="row"><div class="field"><label>Date</label><input id="fdate" type="date" required></div><div class="field"><label>Meal / item</label><input id="fname" required placeholder="e.g. Idli, dal rice, fruit"></div><div class="field"><label>Calories (kcal)</label><input id="fcal" type="number" min="0" step="1" placeholder="Optional"></div><div class="field"><label>Protein (g)</label><input id="fprotein" type="number" min="0" step=".1" placeholder="Optional"></div><div class="field"><label>Carbs (g)</label><input id="fcarb" type="number" min="0" step=".1" placeholder="Optional"></div><div class="field"><label>Fat (g)</label><input id="ffat" type="number" min="0" step=".1" placeholder="Optional"></div></div><button class="primary">Add food</button></form><hr style="border:0;border-top:1px solid var(--line);margin:17px 0"><form id="waterForm"><div class="row"><div class="field"><label>Date</label><input id="wdate" type="date" required></div><div class="field"><label>Water (ml)</label><input id="wml" type="number" min="1" required placeholder="e.g. 250"></div><button class="secondary">Add water</button></div></form></div>
-<div class="grid" id="nutritionSummary"></div><div class="card"><h2>Food history</h2><div id="foodList" class="empty">No food entries yet.</div></div>
+
+<section id="page-activity" class="page hidden space-y-5">
+ <div><h2 class="text-2xl font-bold">Activity & Sleep</h2><p class="text-sm muted mt-1">Track movement, workouts, sleep and daily hydration.</p></div>
+ <div class="panel p-5"><h3 class="font-bold mb-4">Add daily activity</h3><form id="activity-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+  <div><label class="text-xs font-semibold block mb-1">Activity type</label><select class="field" id="a-type"><option>Steps</option><option>Active Energy</option><option>Walking Distance</option><option>Sleep</option><option>Workout</option><option>Water</option><option>Resting Heart Rate</option></select></div>
+  <div><label class="text-xs font-semibold block mb-1">Value</label><input class="field" id="a-value" type="number" min="0" step="any" required placeholder="Enter value"></div>
+  <div><label class="text-xs font-semibold block mb-1">Unit</label><select class="field" id="a-unit"><option>steps</option><option>kcal</option><option>km</option><option>hours</option><option>minutes</option><option>ml</option><option>bpm</option></select></div>
+  <div><label class="text-xs font-semibold block mb-1">Date</label><input class="field" id="a-date" type="date" required></div>
+  <div class="sm:col-span-2 lg:col-span-3"><label class="text-xs font-semibold block mb-1">Notes (optional)</label><input class="field" id="a-note" placeholder="Workout details or context"></div>
+  <div class="flex items-end"><button class="btn btn-primary w-full"><i class="fa-solid fa-plus"></i>Add activity</button></div>
+ </form></div>
+ <div class="panel p-5"><h3 class="font-bold mb-3">Activity history</h3><div id="activity-table" class="overflow-x-auto"></div></div>
 </section>
-<section id="activity" class="page">
-<div class="card"><h2>Record activity or sleep</h2><form id="activityForm"><div class="row"><div class="field"><label>Date</label><input id="adate" type="date" required></div><div class="field"><label>Record type</label><select id="atype"><option>Steps</option><option>Active energy</option><option>Walking distance</option><option>Workout</option><option>Sleep</option><option>Heart rate</option></select></div><div class="field"><label>Value</label><input id="avalue" type="number" min="0" step="any" required></div><div class="field"><label>Unit</label><input id="aunit" value="steps" required></div><div class="field"><label>Notes</label><input id="anote" placeholder="Optional"></div></div><button class="primary">Save activity</button></form></div>
-<div class="card"><h2>Import Apple Health export</h2><p class="muted">Export your data from the Health app on iPhone, then select the <b>export.xml</b> file here. The import is processed in this browser; the file is not uploaded to GitHub.</p><input id="healthFile" type="file" accept=".xml,text/xml,application/xml"><p class="hint">Supported summaries: steps, active energy, walking/running distance, sleep and heart-rate samples. Large exports may take time.</p><div id="importStatus"></div></div>
-<div class="card"><h2>Recent activity and sleep</h2><div id="activityList" class="empty">No activity records yet.</div></div>
+
+<section id="page-trends" class="page hidden space-y-5">
+ <div><h2 class="text-2xl font-bold">History & Trends</h2><p class="text-sm muted mt-1">Review records by date and export a simple CSV report.</p></div>
+ <div class="panel p-5"><div class="flex flex-wrap gap-3 items-end mb-4"><div><label class="text-xs font-semibold block mb-1">From</label><input type="date" id="filter-from" class="field"></div><div><label class="text-xs font-semibold block mb-1">To</label><input type="date" id="filter-to" class="field"></div><button class="btn btn-primary" onclick="renderTrends()"><i class="fa-solid fa-filter"></i>Apply filter</button><button class="btn btn-secondary" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i>Export CSV</button></div><div id="trend-summary" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4"></div><div id="trends-table" class="overflow-x-auto"></div></div>
 </section>
-<section id="body" class="page">
-<div class="card"><h2>Body measurements</h2><form id="bodyForm"><div class="row"><div class="field"><label>Date</label><input id="bdate" type="date" required></div><div class="field"><label>Weight (kg)</label><input id="bweight" type="number" min="1" max="500" step=".1"></div><div class="field"><label>Height (cm)</label><input id="bheight" type="number" min="50" max="250" step=".1"></div><div class="field"><label>Waist (cm)</label><input id="bwaist" type="number" min="1" max="300" step=".1"></div></div><button class="primary">Save body record</button></form></div>
-<div class="grid" id="bodySummary"></div><div class="card"><h2>Body measurement history</h2><div id="bodyList" class="empty">No body measurements yet.</div></div></section>
-<section id="history" class="page"><div class="card"><h2>Health history</h2><div class="row"><div class="field"><label>From</label><input type="date" id="fromDate"></div><div class="field"><label>To</label><input type="date" id="toDate"></div><button class="secondary" id="filterHistory">Apply filter</button><button class="secondary" id="clearFilter">Clear</button></div><div id="historyList" class="empty" style="margin-top:12px">No records found.</div></div></section>
-<section id="backup" class="page">
-<div class="card"><h2>Backup and restore</h2><div class="status">Automatic local snapshot: when you open Health Monitor on a new calendar day, it saves a recovery snapshot in this browser.</div><p class="muted">This is not an automatic cloud backup and cannot run while the app is closed. Download a JSON backup regularly and keep it somewhere safe. Do not put backup files in this public GitHub repository.</p><div class="row"><button class="primary" id="exportBtn">Download backup (JSON)</button><div class="field"><label for="restoreFile">Restore from JSON backup</label><input id="restoreFile" type="file" accept=".json,application/json"></div></div><div id="backupStatus"></div></div>
-<div class="card"><h2>Personal goals (optional)</h2><form id="goalForm"><div class="row"><div class="field"><label>Daily steps goal</label><input id="gsteps" type="number" min="0"></div><div class="field"><label>Daily water goal (ml)</label><input id="gwater" type="number" min="0"></div><div class="field"><label>Daily sleep goal (hours)</label><input id="gsleep" type="number" min="0" max="24" step=".5"></div><button class="primary">Save goals</button></div></form></div>
-<div class="card"><h2>Privacy and data</h2><p class="muted">Your entries are stored in this browser on this device. They are not sent to the GitHub repository. Anyone with access to this browser profile may be able to access them. Avoid entering sensitive health details on a shared or work computer. Clearing browser data may erase records unless you have a backup.</p><button class="danger" id="deleteBtn">Delete all local health data</button></div>
+
+<section id="page-apple" class="page hidden space-y-5">
+ <div><h2 class="text-2xl font-bold">Apple Health Import</h2><p class="text-sm muted mt-1">Import an Apple Health export file to bring supported measurements into your dashboard.</p></div>
+ <div class="panel p-5 space-y-4">
+  <div class="flex gap-3 items-start"><div class="w-11 h-11 rounded-xl bg-slate-100 dark:bg-slate-700 grid place-items-center text-xl"><i class="fa-brands fa-apple"></i></div><div><h3 class="font-bold">Import Apple Health export.xml</h3><p class="text-xs muted mt-1">On iPhone: Health app → profile picture → Export All Health Data → Export. Transfer the ZIP to your computer or phone, extract it, then select export.xml here.</p></div></div>
+  <div class="rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 p-3 text-xs text-amber-900 dark:text-amber-200"><i class="fa-solid fa-lock mr-1"></i>Health exports contain sensitive information. Choose the file locally; it is processed in this browser and is not sent to GitHub by this app.</div>
+  <input type="file" id="apple-file" accept=".xml,text/xml,application/xml" class="field">
+  <button class="btn btn-primary" onclick="importAppleHealth()"><i class="fa-solid fa-file-import"></i>Import Apple Health data</button>
+  <div id="import-status" class="text-xs muted" aria-live="polite"></div>
+  <div class="text-xs muted leading-relaxed"><strong>Supported summaries:</strong> steps, active energy, walking/running distance, heart rate, blood oxygen, body mass and sleep duration where the export contains supported records. Import is based on the selected export file; it is not a live or automatic HealthKit connection. Re-importing the same export may create duplicate entries, so review history before importing it again.</div>
+ </div>
+ <div class="panel p-5"><h3 class="font-bold mb-2">Why live automatic collection is unavailable in this website</h3><p class="text-sm muted leading-relaxed">Apple Health data is protected by iOS HealthKit permissions. A normal HTML website hosted on GitHub Pages cannot request HealthKit access or continuously read Apple Watch measurements. Live collection needs a native iOS app with HealthKit entitlements and user-granted permissions. This web version provides a private, manual export/import workflow instead.</p></div>
 </section>
-<div class="footer">Health Monitor is a personal tracking tool, not a medical device. It does not diagnose, treat or replace professional medical advice. Seek medical help for concerning symptoms or readings.</div>
+
+<section id="page-backup" class="page hidden space-y-5">
+ <div><h2 class="text-2xl font-bold">Backup & Restore</h2><p class="text-sm muted mt-1">Protect your health history with encrypted-device storage practices and regular exports.</p></div>
+ <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+  <div class="panel p-5 space-y-3"><div class="w-11 h-11 rounded-xl bg-blue-50 dark:bg-slate-700 text-brand-600 grid place-items-center text-xl"><i class="fa-solid fa-file-export"></i></div><h3 class="font-bold">Download a full backup</h3><p class="text-xs muted">Export all local health records, activity entries, goals and preferences to a JSON file.</p><p class="text-xs muted">Last downloaded backup: <strong id="last-backup">Not recorded</strong></p><button onclick="downloadBackup()" class="btn btn-primary w-full"><i class="fa-solid fa-download"></i>Download JSON backup</button></div>
+  <div class="panel p-5 space-y-3"><div class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-slate-700 text-emerald-600 grid place-items-center text-xl"><i class="fa-solid fa-file-import"></i></div><h3 class="font-bold">Restore from backup</h3><p class="text-xs muted">Select a Health Monitor JSON backup previously downloaded from this app. Restoring replaces the current local data.</p><input type="file" id="restore-file" accept=".json,application/json" class="field"><button onclick="restoreBackup()" class="btn btn-secondary w-full"><i class="fa-solid fa-rotate-left"></i>Validate & restore</button></div>
+ </div>
+ <div class="panel p-5"><h3 class="font-bold mb-2">Automatic local snapshot</h3><p class="text-sm muted leading-relaxed">When Health Monitor is opened on a new calendar day, it saves a local snapshot in this browser (up to 14 daily snapshots). This is not a downloadable file, does not run while the browser is closed, and does not protect against browser data being cleared or device loss. Download a JSON backup regularly and store it in a secure personal location. Never upload personal health records to this public GitHub repository.</p><p class="text-xs muted mt-3">Local snapshots available: <strong id="snapshot-count">0</strong></p></div>
+</section>
+
+<section id="page-settings" class="page hidden space-y-5">
+ <div><h2 class="text-2xl font-bold">Settings</h2><p class="text-sm muted mt-1">Personalise your daily targets and application preferences.</p></div>
+ <div class="panel p-5"><h3 class="font-bold mb-4">Daily goals</h3><form id="goals-form" class="grid grid-cols-1 sm:grid-cols-3 gap-3"><div><label class="text-xs font-semibold block mb-1">Step target</label><input class="field" id="g-steps" type="number" min="1"></div><div><label class="text-xs font-semibold block mb-1">Water target (ml)</label><input class="field" id="g-water" type="number" min="1"></div><div><label class="text-xs font-semibold block mb-1">Sleep target (hours)</label><input class="field" id="g-sleep" type="number" min="1" max="24" step=".5"></div><div><button class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i>Save goals</button></div></form></div>
+ <div class="panel p-5"><h3 class="font-bold mb-2">Appearance</h3><p class="text-sm muted mb-3">Choose light or dark display mode. Your selection is remembered in this browser.</p><button onclick="toggleTheme()" class="btn btn-secondary"><i class="fa-solid fa-circle-half-stroke"></i>Switch appearance</button></div>
+ <div class="panel p-5 border-rose-200 dark:border-rose-900"><h3 class="font-bold text-rose-600 mb-2">Data management</h3><p class="text-xs muted mb-3">This permanently deletes records and local snapshots from this browser. Download a backup first if you may need the information.</p><button onclick="clearAllData()" class="btn btn-danger"><i class="fa-solid fa-trash"></i>Delete all local health data</button></div>
+</section>
+<footer class="text-center text-xs muted py-4">Health Monitor · Personal wellness record · Data stored locally in this browser</footer>
 </main>
+</div>
+</div>
 <script>
-(()=>{'use strict';
-const KEY='healthMonitorDataV1',SNAP='healthMonitorSnapshotsV1';
-const $=id=>document.getElementById(id), today=()=>new Date().toISOString().slice(0,10), nowLocal=()=>{const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)};
-const blank=()=>({vitals:[],foods:[],water:[],activities:[],body:[],notes:{},goals:{steps:8000,water:2000,sleep:8}});
-let db;try{db=JSON.parse(localStorage.getItem(KEY))||blank()}catch{db=blank()}
-function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
-function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
-function table(rows,heads){if(!rows.length)return '<div class="empty">No records yet.</div>';return '<div style="overflow:auto"><table class="table"><thead><tr>'+heads.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>'+rows.join('')+'</tbody></table></div>'}
-function rowDelete(type,x){return '<button class="danger" data-del="'+type+'" data-id="'+esc(x.id)+'">Delete</button>'}
-function sum(a,k){return a.reduce((n,x)=>n+(Number(x[k])||0),0)}
-function dayRows(a){return a.filter(x=>x.date===today())}
-function render(){
-$('today').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-const v=dayRows(db.vitals),f=dayRows(db.foods),w=dayRows(db.water),a=dayRows(db.activities),b=dayRows(db.body);
-const steps=sum(a.filter(x=>x.type==='Steps'),'value'),water=sum(w,'ml'),cal=sum(f,'cal'),protein=sum(f,'protein');
-const cards=[['Steps',steps.toLocaleString(),'today'],['Water',water+' ml','today'],['Calories',cal+' kcal','logged today'],['Protein',protein.toFixed(1)+' g','logged today'],['Vital records',v.length,'today'],['Activities',a.length,'today']];
-$('summary').innerHTML=cards.map(c=>'<div class="card metric"><small>'+c[0]+'</small><strong>'+c[1]+'</strong><small>'+c[2]+'</small></div>').join('');
-$('latest').innerHTML=[...db.vitals.map(x=>({...x,kind:'Vital'})),...db.activities.map(x=>({...x,kind:'Activity'})),...db.body.map(x=>({...x,kind:'Body'}))].sort((x,y)=>(y.date||'').localeCompare(x.date||'')).slice(0,6).map(x=>'<p><b>'+esc(x.kind)+' · '+esc(x.type||'Body measurements')+'</b> — '+esc(x.value??[x.weight,x.waist].filter(Boolean).join(' / '))+' '+esc(x.unit||'')+' <span class="muted">('+esc(x.date)+')</span></p>').join('')||'<div class="empty">No records yet. Add your first measurement in Vitals or Activity.</div>';
-$('notes').value=db.notes[today()]||'';
-$('vitalList').innerHTML=table([...db.vitals].sort((x,y)=>y.date.localeCompare(x.date)).slice(0,30).map(x=>'<tr><td>'+esc(x.date)+'</td><td>'+esc(x.type)+'</td><td>'+esc(x.value)+'</td><td>'+esc(x.unit)+'</td><td>'+esc(x.note)+'</td><td>'+rowDelete('vitals',x)+'</td></tr>'),['Date','Type','Value','Unit','Notes','']);
-$('foodList').innerHTML=table([...db.foods].sort((x,y)=>y.date.localeCompare(x.date)).slice(0,50).map(x=>'<tr><td>'+esc(x.date)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.cal||'—')+'</td><td>'+esc(x.protein||'—')+'</td><td>'+rowDelete('foods',x)+'</td></tr>'),['Date','Food','kcal','Protein g','']);
-$('nutritionSummary').innerHTML=[['Calories today',cal+' kcal'],['Protein today',protein.toFixed(1)+' g'],['Water today',water+' ml']].map(x=>'<div class="card metric"><small>'+x[0]+'</small><strong>'+x[1]+'</strong></div>').join('');
-$('activityList').innerHTML=table([...db.activities].sort((x,y)=>y.date.localeCompare(x.date)).slice(0,60).map(x=>'<tr><td>'+esc(x.date)+'</td><td>'+esc(x.type)+'</td><td>'+esc(x.value)+'</td><td>'+esc(x.unit)+'</td><td>'+esc(x.note)+'</td><td>'+rowDelete('activities',x)+'</td></tr>'),['Date','Type','Value','Unit','Notes','']);
-const last=db.body.slice().sort((x,y)=>y.date.localeCompare(x.date))[0];
-$('bodySummary').innerHTML=[['Latest weight',last?.weight?last.weight+' kg':'—'],['Latest waist',last?.waist?last.waist+' cm':'—'],['BMI',last?.weight&&last?.height?(last.weight/((last.height/100)**2)).toFixed(1):'—']].map(x=>'<div class="card metric"><small>'+x[0]+'</small><strong>'+x[1]+'</strong></div>').join('');
-$('bodyList').innerHTML=table([...db.body].sort((x,y)=>y.date.localeCompare(x.date)).map(x=>'<tr><td>'+esc(x.date)+'</td><td>'+esc(x.weight||'—')+'</td><td>'+esc(x.height||'—')+'</td><td>'+esc(x.waist||'—')+'</td><td>'+rowDelete('body',x)+'</td></tr>'),['Date','Weight kg','Height cm','Waist cm','']);
-history();
-$('gsteps').value=db.goals.steps??'';$('gwater').value=db.goals.water??'';$('gsleep').value=db.goals.sleep??'';
+const DB_KEY='healthMonitorDB_v2', SNAP_KEY='healthMonitorSnapshots_v2', THEME_KEY='healthMonitorTheme_v2';
+const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
+const localDateTime=()=>{const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16)};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+let db=loadDB();
+function blankDB(){return {version:2,records:[],activities:[],goals:{steps:8000,water:2000,sleep:8},lastBackup:null,createdAt:new Date().toISOString()}}
+function loadDB(){try{const v=JSON.parse(localStorage.getItem(DB_KEY));return v&&Array.isArray(v.records)&&Array.isArray(v.activities)?{...blankDB(),...v}:blankDB()}catch(e){return blankDB()}}
+function save(){try{localStorage.setItem(DB_KEY,JSON.stringify(db));const el=document.getElementById('save-status');if(el)el.textContent='Saved locally · '+new Date().toLocaleTimeString();}catch(e){alert('The browser could not save this data. Please download a backup and free browser storage.');}}
+function escapeHTML(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fmt(n,d=0){return Number(n).toLocaleString(undefined,{maximumFractionDigits:d})}
+function showPage(page){document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));document.getElementById('page-'+page).classList.remove('hidden');document.querySelectorAll('.nav-btn').forEach(x=>x.classList.toggle('active',x.dataset.page===page));const titles={dashboard:'Dashboard',records:'Health Records',activity:'Activity & Sleep',trends:'History & Trends',apple:'Apple Health Import',backup:'Backup & Restore',settings:'Settings'};document.getElementById('page-title').textContent=titles[page]||'Health Monitor';if(innerWidth<768)toggleMenu(true);renderAll();window.scrollTo({top:0,behavior:'smooth'})}
+function toggleMenu(forceClose=false){const s=document.getElementById('sidebar'),scrim=document.getElementById('mobile-scrim');if(forceClose){s.classList.remove('open');scrim.classList.remove('show');return}s.classList.toggle('open');scrim.classList.toggle('show')}
+function toggleTheme(){const dark=!document.documentElement.classList.contains('dark');document.documentElement.classList.toggle('dark',dark);localStorage.setItem(THEME_KEY,dark?'dark':'light');document.getElementById('theme-icon').className=dark?'fa-solid fa-sun':'fa-solid fa-moon'}
+function initTheme(){const t=localStorage.getItem(THEME_KEY);const dark=t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.classList.toggle('dark',dark);document.getElementById('theme-icon').className=dark?'fa-solid fa-sun':'fa-solid fa-moon'}
+function dailySnapshot(){try{const day=today();let snaps=JSON.parse(localStorage.getItem(SNAP_KEY)||'{}');if(!snaps[day]){snaps[day]={createdAt:new Date().toISOString(),data:JSON.stringify(db)};const keys=Object.keys(snaps).sort();while(keys.length>14)delete snaps[keys.shift()];localStorage.setItem(SNAP_KEY,JSON.stringify(snaps))}}catch(e){}}
+function renderAll(){renderDashboard();renderRecords();renderActivity();renderTrends();renderBackup();renderSettings()}
+function metricToday(type){return db.activities.filter(a=>a.date===today()&&a.type===type).reduce((s,a)=>s+Number(a.value||0),0)}
+function latestRecord(type){return db.records.filter(r=>r.type===type).sort((a,b)=>b.date.localeCompare(a.date))[0]}
+function renderDashboard(){
+ document.getElementById('today-label').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+ document.getElementById('dashboard-date').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+ const steps=metricToday('Steps'),energy=metricToday('Active Energy'),dist=metricToday('Walking Distance'),sleep=metricToday('Sleep');
+ document.getElementById('m-steps').textContent=steps?fmt(steps):'—';document.getElementById('m-energy').textContent=energy?fmt(energy):'—';document.getElementById('m-distance').textContent=dist?fmt(dist,2):'—';document.getElementById('m-sleep').textContent=sleep?fmt(sleep,1):'—';
+ const types=[['Blood Pressure','mmHg'],['Blood Glucose','mg/dL'],['Heart Rate','bpm'],['SpO₂','%'],['Temperature','°C'],['Weight','kg']];
+ document.getElementById('latest-vitals').innerHTML=types.map(([t,u])=>{const r=latestRecord(t);return '<div class="rounded-lg bg-slate-50 dark:bg-slate-700/50 p-3"><div class="text-xs muted">'+t+'</div><div class="text-lg font-bold mt-1">'+(r?escapeHTML(r.value)+' <span class="text-xs font-normal muted">'+escapeHTML(r.unit||u)+'</span>':'—')+'</div><div class="text-[10px] muted mt-1">'+(r?new Date(r.date).toLocaleString():'No entry yet')+'</div></div>'}).join('');
+ const goals=[['Steps',steps,db.goals.steps,'steps'],['Water',metricToday('Water'),db.goals.water,'ml'],['Sleep',sleep,db.goals.sleep,'hours']];
+ document.getElementById('goal-progress').innerHTML=goals.map(([n,v,g,u])=>{let p=Math.min(100,g?100*v/g:0);return '<div><div class="flex justify-between text-xs mb-1"><span class="font-semibold">'+n+'</span><span class="muted">'+fmt(v,1)+' / '+fmt(g,1)+' '+u+'</span></div><div class="h-2 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden"><div class="h-full bg-brand-600 rounded-full" style="width:'+p+'%"></div></div></div>'}).join('');
+ const all=[...db.records.map(x=>({...x,kind:'Measurement'})),...db.activities.map(x=>({...x,kind:'Activity'}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,7);
+ document.getElementById('recent-list').innerHTML=tableHTML(['Type','Category','Value','Date'],all.map(x=>[x.kind,x.type,String(x.value)+' '+(x.unit||''),new Date(x.date).toLocaleString()]));
 }
-function history(){const from=$('fromDate').value,to=$('toDate').value;let all=[];for(const t of ['vitals','foods','water','activities','body'])for(const x of db[t])all.push({...x,kind:t});all=all.filter(x=>(!from||x.date>=from)&&(!to||x.date<=to)).sort((a,b)=>b.date.localeCompare(a.date));$('historyList').innerHTML=table(all.map(x=>'<tr><td>'+esc(x.date)+'</td><td>'+esc(x.kind)+'</td><td>'+esc(x.type||x.name||'Water/body record')+'</td><td>'+esc(x.value??x.ml??x.weight??'')+'</td><td>'+esc(x.unit||'')+'</td></tr>'),['Date','Category','Record','Value','Unit'])}
-document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab))}));
-$('quickAdd').onclick=()=>document.querySelector('[data-tab="vitals"]').click();
-$('saveNotes').onclick=()=>{db.notes[today()]=$('notes').value;save();alert('Notes saved on this device.')};
-$('vtype').onchange=()=>{const bp=$('vtype').value==='Blood pressure';$('vvalueWrap').classList.toggle('hide',bp);$('sysWrap').classList.toggle('hide',!bp);$('diaWrap').classList.toggle('hide',!bp);$('vvalue').required=!bp};
-$('vitalForm').onsubmit=e=>{e.preventDefault();const type=$('vtype').value,bp=type==='Blood pressure';const value=bp?$('vsys').value+'/'+$('vdia').value:$('vvalue').value;if(bp&&(!$('vsys').value||!$('vdia').value))return alert('Enter both blood pressure values.');db.vitals.push({id:id(),date:$('vdate').value,type,value,unit:bp?'mmHg':$('vunit').value,note:$('vnote').value});e.target.reset();$('vdate').value=nowLocal();$('vtype').dispatchEvent(new Event('change'));save()};
-$('foodForm').onsubmit=e=>{e.preventDefault();db.foods.push({id:id(),date:$('fdate').value,name:$('fname').value,cal:+$('fcal').value||0,protein:+$('fprotein').value||0,carb:+$('fcarb').value||0,fat:+$('ffat').value||0});e.target.reset();$('fdate').value=today();save()};
-$('waterForm').onsubmit=e=>{e.preventDefault();db.water.push({id:id(),date:$('wdate').value,ml:+$('wml').value});e.target.reset();$('wdate').value=today();save()};
-$('activityForm').onsubmit=e=>{e.preventDefault();db.activities.push({id:id(),date:$('adate').value,type:$('atype').value,value:+$('avalue').value,unit:$('aunit').value,note:$('anote').value});e.target.reset();$('adate').value=today();$('aunit').value='steps';save()};
-$('bodyForm').onsubmit=e=>{e.preventDefault();if(!$('bweight').value&&!$('bwaist').value)return alert('Enter weight or waist measurement.');db.body.push({id:id(),date:$('bdate').value,weight:+$('bweight').value||null,height:+$('bheight').value||null,waist:+$('bwaist').value||null});e.target.reset();$('bdate').value=today();save()};
-document.addEventListener('click',e=>{const b=e.target.closest('[data-del]');if(!b)return;if(!confirm('Delete this record?'))return;db[b.dataset.del]=db[b.dataset.del].filter(x=>x.id!==b.dataset.id);save()});
-$('filterHistory').onclick=history;$('clearFilter').onclick=()=>{$('fromDate').value='';$('toDate').value='';history()};
-$('goalForm').onsubmit=e=>{e.preventDefault();db.goals={steps:+$('gsteps').value||0,water:+$('gwater').value||0,sleep:+$('gsleep').value||0};save();alert('Goals saved.')};
-$('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify({app:'Health Monitor',version:1,exportedAt:new Date().toISOString(),data:db},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='health-monitor-backup-'+today()+'.json';a.click();URL.revokeObjectURL(a.href);$('backupStatus').innerHTML='<div class="status">Backup download requested. Check your Downloads folder.</div>'};
-$('restoreFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const obj=JSON.parse(await file.text()),d=obj.data||obj;if(!d||!Array.isArray(d.vitals)||!Array.isArray(d.activities))throw Error('This does not look like a Health Monitor backup.');if(!confirm('Restore this backup? Current records will be replaced.'))return;db={...blank(),...d};save();$('backupStatus').innerHTML='<div class="status">Backup restored on this device.</div>'}catch(err){alert('Could not restore: '+err.message)}e.target.value=''};
-$('deleteBtn').onclick=()=>{if(!confirm('Permanently delete all Health Monitor records from this browser? Download a backup first if needed.'))return;if(!confirm('Please confirm once more. This cannot be undone without a backup.'))return;db=blank();localStorage.removeItem(KEY);localStorage.removeItem(SNAP);save();alert('Local records deleted.')};
-$('healthFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;$('importStatus').innerHTML='<div class="status warn">Reading Apple Health XML…</div>';try{const xml=await file.text();if(xml.length>180000000)throw Error('This export is very large. Try a smaller export if possible.');const doc=new DOMParser().parseFromString(xml,'application/xml');if(doc.querySelector('parsererror'))throw Error('The selected file is not valid XML.');const mapping={'HKQuantityTypeIdentifierStepCount':['Steps','count'],'HKQuantityTypeIdentifierActiveEnergyBurned':['Active energy','kcal'],'HKQuantityTypeIdentifierDistanceWalkingRunning':['Walking distance','km'],'HKQuantityTypeIdentifierHeartRate':['Heart rate','bpm'],'HKCategoryTypeIdentifierSleepAnalysis':['Sleep','hours']};const agg=new Map();let count=0;doc.querySelectorAll('Record').forEach(r=>{const type=r.getAttribute('type'),m=mapping[type];if(!m)return;const date=(r.getAttribute('startDate')||'').slice(0,10);if(!date)return;let val=Number(r.getAttribute('value'));if(!Number.isFinite(val))return;const unit=r.getAttribute('unit')||m[1];if(type.includes('Distance')&&unit.toLowerCase().includes('mi'))val*=1.60934;const key=date+'|'+m[0];agg.set(key,(agg.get(key)||0)+val);count++});doc.querySelectorAll('睡眠').length;const imported=[];for(const [key,val] of agg){const [date,type]=key.split('|');let unit=type==='Steps'?'steps':type==='Active energy'?'kcal':type==='Walking distance'?'km':'bpm';if(type==='Heart rate'){const prev=imported.find(x=>x.date===date&&x.type===type);if(prev){prev.value=(prev.value+val)/2;continue}}imported.push({id:id(),date,type,value:+val.toFixed(2),unit,note:'Imported from Apple Health XML'})}if(!imported.length)throw Error('No supported activity records were found in this XML export.');db.activities.push(...imported);save();$('importStatus').innerHTML='<div class="status">Imported '+imported.length+' daily summaries from '+count+' Apple Health samples. Review the records for accuracy.</div>'}catch(err){$('importStatus').innerHTML='<div class="status warn">Import failed: '+esc(err.message)+'</div>'}e.target.value=''};
-function dailySnapshot(){try{const day=today(),s=JSON.parse(localStorage.getItem(SNAP)||'{}');if(s.lastSnapshot!==day){s.snapshots=s.snapshots||[];s.snapshots.push({date:new Date().toISOString(),data:db});if(s.snapshots.length>14)s.snapshots=s.snapshots.slice(-14);s.lastSnapshot=day;localStorage.setItem(SNAP,JSON.stringify(s))}}catch(e){console.warn('Local snapshot unavailable',e)}}
-$('vdate').value=nowLocal();$('fdate').value=today();$('wdate').value=today();$('adate').value=today();$('bdate').value=today();dailySnapshot();render();
-})();
-</script></body></html>
+function tableHTML(headers,rows){if(!rows.length)return '<div class="text-sm muted py-5 text-center">No records available yet.</div>';return '<table class="w-full text-left text-xs min-w-[560px]"><thead class="bg-slate-50 dark:bg-slate-700/60 text-slate-500 dark:text-slate-300 uppercase"><tr>'+headers.map(h=>'<th class="p-3 font-semibold">'+h+'</th>').join('')+'</tr></thead><tbody class="divide-y divide-slate-100 dark:divide-slate-700">'+rows.map(row=>'<tr class="hover:bg-slate-50 dark:hover:bg-slate-700/40">'+row.map(v=>'<td class="p-3">'+v+'</td>').join('')+'</tr>').join('')+'</tbody></table>'}
+function renderRecords(){const f=document.getElementById('record-filter')?.value||'';const rows=db.records.filter(r=>!f||r.type===f).sort((a,b)=>b.date.localeCompare(a.date));document.getElementById('records-table').innerHTML=tableHTML(['Measurement','Value','Date & time','Notes',''],rows.map(r=>[escapeHTML(r.type),escapeHTML(r.value)+' '+escapeHTML(r.unit||''),new Date(r.date).toLocaleString(),escapeHTML(r.note||'—'),'<button class="text-rose-600" onclick="deleteItem(\'records\',\''+r.id+'\')"><i class="fa-solid fa-trash"></i></button>']))}
+function renderActivity(){const rows=db.activities.slice().sort((a,b)=>b.date.localeCompare(a.date));document.getElementById('activity-table').innerHTML=tableHTML(['Activity','Value','Date','Notes',''],rows.map(a=>[escapeHTML(a.type),fmt(a.value,2)+' '+escapeHTML(a.unit||''),escapeHTML(a.date),escapeHTML(a.note||'—'),'<button class="text-rose-600" onclick="deleteItem(\'activities\',\''+a.id+'\')"><i class="fa-solid fa-trash"></i></button>']))}
+function renderTrends(){const from=document.getElementById('filter-from')?.value||'',to=document.getElementById('filter-to')?.value||'';const all=[...db.records.map(x=>({...x,kind:'Measurement'})),...db.activities.map(x=>({...x,kind:'Activity'}))].filter(x=>(!from||x.date.slice(0,10)>=from)&&(!to||x.date.slice(0,10)<=to)).sort((a,b)=>b.date.localeCompare(a.date));document.getElementById('trend-summary').innerHTML=[['Total entries',all.length],['Measurements',all.filter(x=>x.kind==='Measurement').length],['Activity entries',all.filter(x=>x.kind==='Activity').length],['Days covered',new Set(all.map(x=>x.date.slice(0,10))).size]].map(([n,v])=>'<div class="rounded-lg bg-slate-50 dark:bg-slate-700/50 p-3"><div class="text-xs muted">'+n+'</div><div class="text-2xl font-bold mt-1">'+v+'</div></div>').join('');document.getElementById('trends-table').innerHTML=tableHTML(['Record type','Category','Value','Date','Notes'],all.map(x=>[x.kind,escapeHTML(x.type),escapeHTML(x.value)+' '+escapeHTML(x.unit||''),new Date(x.date).toLocaleString(),escapeHTML(x.note||'—')]))}
+function renderBackup(){const d=document.getElementById('last-backup');if(d)d.textContent=db.lastBackup?new Date(db.lastBackup).toLocaleString():'Not recorded';const s=JSON.parse(localStorage.getItem(SNAP_KEY)||'{}');document.getElementById('snapshot-count').textContent=Object.keys(s).length;document.getElementById('backup-alert').classList.toggle('hidden',!!db.lastBackup&&Date.now()-new Date(db.lastBackup).getTime()<7*86400000)}
+function renderSettings(){document.getElementById('g-steps').value=db.goals.steps;document.getElementById('g-water').value=db.goals.water;document.getElementById('g-sleep').value=db.goals.sleep}
+function deleteItem(bucket,id){if(!confirm('Delete this entry?'))return;db[bucket]=db[bucket].filter(x=>x.id!==id);save();renderAll()}
+document.getElementById('record-form').addEventListener('submit',e=>{e.preventDefault();db.records.push({id:uid(),type:document.getElementById('r-type').value,value:document.getElementById('r-value').value.trim(),unit:document.getElementById('r-unit').value,date:new Date(document.getElementById('r-date').value).toISOString(),note:document.getElementById('r-note').value.trim(),source:'manual'});save();e.target.reset();document.getElementById('r-date').value=localDateTime();renderAll();alert('Health measurement saved.')});
+document.getElementById('activity-form').addEventListener('submit',e=>{e.preventDefault();db.activities.push({id:uid(),type:document.getElementById('a-type').value,value:Number(document.getElementById('a-value').value),unit:document.getElementById('a-unit').value,date:document.getElementById('a-date').value,note:document.getElementById('a-note').value.trim(),source:'manual'});save();e.target.reset();document.getElementById('a-date').value=today();renderAll();alert('Activity saved.')});
+document.getElementById('goals-form').addEventListener('submit',e=>{e.preventDefault();db.goals={steps:Number(document.getElementById('g-steps').value)||8000,water:Number(document.getElementById('g-water').value)||2000,sleep:Number(document.getElementById('g-sleep').value)||8};save();renderAll();alert('Daily goals updated.')});
+function downloadBackup(){const payload={app:'Health Monitor',version:2,exportedAt:new Date().toISOString(),data:db};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='Health-Monitor-Backup-'+today()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);db.lastBackup=new Date().toISOString();save();renderBackup()}
+function restoreBackup(){const f=document.getElementById('restore-file').files[0];if(!f){alert('Please select a JSON backup file.');return}const reader=new FileReader();reader.onload=()=>{try{const p=JSON.parse(reader.result),d=p.data||p;if(!Array.isArray(d.records)||!Array.isArray(d.activities)||!d.goals)throw Error('This does not appear to be a valid Health Monitor backup.');if(!confirm('This will replace all current records in this browser. Continue?'))return;db={...blankDB(),...d};save();renderAll();alert('Backup restored successfully.')}catch(err){alert('Restore failed: '+err.message)}};reader.readAsText(f)}
+function exportCSV(){const rows=[['Kind','Type','Value','Unit','Date','Notes'],...db.records.map(x=>['Measurement',x.type,x.value,x.unit,x.date,x.note||'']),...db.activities.map(x=>['Activity',x.type,x.value,x.unit,x.date,x.note||''])];const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='Health-Monitor-Records-'+today()+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function addActivity(type,value,unit,date,source,note=''){db.activities.push({id:uid(),type,value,unit,date,note,source});}
+function addRecord(type,value,unit,date,source,note=''){db.records.push({id:uid(),type,value,unit,date,note,source});}
+function importAppleHealth(){
+ const file=document.getElementById('apple-file').files[0],status=document.getElementById('import-status');if(!file){status.textContent='Please choose an Apple Health export.xml file.';return}
+ status.textContent='Reading and processing the selected export…';const reader=new FileReader();
+ reader.onload=()=>{try{const xml=new DOMParser().parseFromString(reader.result,'application/xml');if(xml.querySelector('parsererror'))throw Error('The selected file is not valid XML. Please choose export.xml from Apple Health.');const nodes=[...xml.getElementsByTagName('Record')];let imported=0,skipped=0;const sums=new Map();
+ const dateKey=s=>{const d=new Date(s);if(isNaN(d))return null;return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
+ for(const n of nodes){const type=n.getAttribute('type')||'',value=n.getAttribute('value'),unit=n.getAttribute('unit')||'',start=n.getAttribute('startDate')||'',day=dateKey(start);if(!day||value==null)continue;let key=null,kind='activity',v=Number(value),outUnit=unit;
+  if(type==='HKQuantityTypeIdentifierStepCount'){key='Steps';outUnit='steps'}
+  else if(type==='HKQuantityTypeIdentifierActiveEnergyBurned'){key='Active Energy';outUnit='kcal'}
+  else if(type==='HKQuantityTypeIdentifierDistanceWalkingRunning'){key='Walking Distance';if(unit==='m')v=v/1000;else if(unit==='mi')v=v*1.60934;outUnit='km'}
+  else if(type==='HKQuantityTypeIdentifierHeartRate'){key='Heart Rate';kind='record';outUnit='bpm'}
+  else if(type==='HKQuantityTypeIdentifierOxygenSaturation'){key='SpO₂';kind='record';v=v*100;outUnit='%'}
+  else if(type==='HKQuantityTypeIdentifierBodyMass'){key='Weight';kind='record';if(unit==='lb')v=v*0.453592;outUnit='kg'}
+  else if(type==='HKCategoryTypeIdentifierSleepAnalysis'){
+    const val=n.getAttribute('value')||'';if(!/Asleep|Core|Deep|REM|Unspecified/i.test(val)||/InBed|Awake/i.test(val))continue;
+    const end=n.getAttribute('endDate');const mins=(new Date(end)-new Date(start))/60000;if(!(mins>0&&mins<1440))continue;key='Sleep';v=mins/60;outUnit='hours';
+  } else continue;
+  if(!Number.isFinite(v)){skipped++;continue}
+  const k=day+'|'+key;let x=sums.get(k);if(!x){x={day,key,kind,total:0,count:0,unit:outUnit};sums.set(k,x)}x.total+=v;x.count++;
+ }
+ for(const x of sums.values()){const v=x.key==='Heart Rate'||x.key==='SpO₂'?x.total/x.count:x.total;if(x.kind==='record')addRecord(x.key,Number(v.toFixed(2)),x.unit,x.day+'T12:00:00', 'Apple Health import');else addActivity(x.key,Number(v.toFixed(2)),x.unit,x.day,'Apple Health import');imported++}
+ if(!imported)status.textContent='No supported measurements were found in this export. Check that you selected the Apple Health export.xml file.';else{save();renderAll();status.textContent='Import complete: '+imported+' daily summaries added. '+skipped+' unsupported values were skipped. Check your history for the imported dates.'}
+ }catch(err){status.textContent='Import failed: '+err.message}};
+ reader.readAsText(file);
+}
+function clearAllData(){if(!confirm('Permanently delete all Health Monitor records, activities and local snapshots from this browser? Download a backup first if needed.'))return;if(!confirm('Final confirmation: delete all local health data?'))return;db=blankDB();localStorage.removeItem(SNAP_KEY);save();renderAll();alert('Local health data deleted.')}
+initTheme();document.getElementById('r-date').value=localDateTime();document.getElementById('a-date').value=today();dailySnapshot();renderAll();document.getElementById('filter-from').value=new Date(Date.now()-30*86400000).toISOString().slice(0,10);document.getElementById('filter-to').value=today();renderTrends();
+</script>
+</body></html>
