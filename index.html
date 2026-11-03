@@ -189,27 +189,68 @@ function exportCSV(){const rows=[['Kind','Type','Value','Unit','Date','Notes'],.
 function addActivity(type,value,unit,date,source,note=''){db.activities.push({id:uid(),type,value,unit,date,note,source});}
 function addRecord(type,value,unit,date,source,note=''){db.records.push({id:uid(),type,value,unit,date,note,source});}
 function importAppleHealth(){
- const file=document.getElementById('apple-file').files[0],status=document.getElementById('import-status');if(!file){status.textContent='Please choose an Apple Health export.xml file.';return}
- status.textContent='Reading and processing the selected export…';const reader=new FileReader();
- reader.onload=()=>{try{const xml=new DOMParser().parseFromString(reader.result,'application/xml');if(xml.querySelector('parsererror'))throw Error('The selected file is not valid XML. Please choose export.xml from Apple Health.');const nodes=[...xml.getElementsByTagName('Record')];let imported=0,skipped=0;const sums=new Map();
- const dateKey=s=>{const d=new Date(s);if(isNaN(d))return null;return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
- for(const n of nodes){const type=n.getAttribute('type')||'',value=n.getAttribute('value'),unit=n.getAttribute('unit')||'',start=n.getAttribute('startDate')||'',day=dateKey(start);if(!day||value==null)continue;let key=null,kind='activity',v=Number(value),outUnit=unit;
-  if(type==='HKQuantityTypeIdentifierStepCount'){key='Steps';outUnit='steps'}
-  else if(type==='HKQuantityTypeIdentifierActiveEnergyBurned'){key='Active Energy';outUnit='kcal'}
-  else if(type==='HKQuantityTypeIdentifierDistanceWalkingRunning'){key='Walking Distance';if(unit==='m')v=v/1000;else if(unit==='mi')v=v*1.60934;outUnit='km'}
-  else if(type==='HKQuantityTypeIdentifierHeartRate'){key='Heart Rate';kind='record';outUnit='bpm'}
-  else if(type==='HKQuantityTypeIdentifierOxygenSaturation'){key='SpO₂';kind='record';v=v*100;outUnit='%'}
-  else if(type==='HKQuantityTypeIdentifierBodyMass'){key='Weight';kind='record';if(unit==='lb')v=v*0.453592;outUnit='kg'}
-  else if(type==='HKCategoryTypeIdentifierSleepAnalysis'){
-    const val=n.getAttribute('value')||'';if(!/Asleep|Core|Deep|REM|Unspecified/i.test(val)||/InBed|Awake/i.test(val))continue;
-    const end=n.getAttribute('endDate');const mins=(new Date(end)-new Date(start))/60000;if(!(mins>0&&mins<1440))continue;key='Sleep';v=mins/60;outUnit='hours';
-  } else continue;
-  if(!Number.isFinite(v)){skipped++;continue}
-  const k=day+'|'+key;let x=sums.get(k);if(!x){x={day,key,kind,total:0,count:0,unit:outUnit};sums.set(k,x)}x.total+=v;x.count++;
- }
- for(const x of sums.values()){const v=x.key==='Heart Rate'||x.key==='SpO₂'?x.total/x.count:x.total;if(x.kind==='record')addRecord(x.key,Number(v.toFixed(2)),x.unit,x.day+'T12:00:00', 'Apple Health import');else addActivity(x.key,Number(v.toFixed(2)),x.unit,x.day,'Apple Health import');imported++}
- if(!imported)status.textContent='No supported measurements were found in this export. Check that you selected the Apple Health export.xml file.';else{save();renderAll();status.textContent='Import complete: '+imported+' daily summaries added. '+skipped+' unsupported values were skipped. Check your history for the imported dates.'}
- }catch(err){status.textContent='Import failed: '+err.message}};
+ const file=document.getElementById('apple-file').files[0],status=document.getElementById('import-status');
+ if(!file){status.textContent='Please choose the Apple Health export.xml file.';return}
+ status.textContent='Reading Apple Health export…';
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const xml=new DOMParser().parseFromString(String(reader.result||''),'application/xml');
+   if(xml.querySelector('parsererror'))throw Error('The selected file is not valid XML. Please select the export.xml file extracted from Apple Health.');
+   let nodes=[...xml.getElementsByTagName('Record')];
+   if(!nodes.length)nodes=[...xml.getElementsByTagNameNS('*','Record')];
+   const foundTypes=new Map();
+   for(const n of nodes){const t=n.getAttribute('type')||'(type missing)';foundTypes.set(t,(foundTypes.get(t)||0)+1)}
+   let imported=0,skipped=0;const sums=new Map();
+   const dateKey=s=>{if(!s)return null;const m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})/);if(m)return m[1]+'-'+m[2]+'-'+m[3];const d=new Date(s);if(isNaN(d))return null;return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+   const add=(day,key,kind,v,unit,average=false)=>{
+    if(!day||!Number.isFinite(v))return;
+    const k=day+'|'+key;let x=sums.get(k);
+    if(!x){x={day,key,kind,total:0,count:0,unit,average};sums.set(k,x)}
+    x.total+=v;x.count++;
+   };
+   for(const n of nodes){
+    const type=n.getAttribute('type')||'',value=n.getAttribute('value'),unit=(n.getAttribute('unit')||'').toLowerCase(),start=n.getAttribute('startDate')||'',day=dateKey(start);
+    if(!day){skipped++;continue}
+    let key=null,kind='activity',v=Number(value),outUnit=unit,average=false;
+    if(type==='HKQuantityTypeIdentifierStepCount'){key='Steps';outUnit='steps'}
+    else if(type==='HKQuantityTypeIdentifierActiveEnergyBurned'||type==='HKQuantityTypeIdentifierBasalEnergyBurned'){key=type.includes('Basal')?'Resting Energy':'Active Energy';outUnit='kcal'}
+    else if(type==='HKQuantityTypeIdentifierDistanceWalkingRunning'||type==='HKQuantityTypeIdentifierDistanceCycling'){key=type.includes('Cycling')?'Cycling Distance':'Walking Distance';if(unit==='m')v/=1000;else if(unit==='mi')v*=1.609344;outUnit='km'}
+    else if(type==='HKQuantityTypeIdentifierHeartRate'){key='Heart Rate';kind='record';outUnit='bpm';average=true}
+    else if(type==='HKQuantityTypeIdentifierOxygenSaturation'){key='SpO₂';kind='record';v*=100;outUnit='%';average=true}
+    else if(type==='HKQuantityTypeIdentifierBodyMass'){key='Weight';kind='record';if(unit==='lb')v*=0.45359237;else if(unit==='g')v/=1000;outUnit='kg';average=true}
+    else if(type==='HKQuantityTypeIdentifierBodyTemperature'){key='Temperature';kind='record';if(unit==='degf')v=(v-32)*5/9;outUnit='°C';average=true}
+    else if(type==='HKQuantityTypeIdentifierRespiratoryRate'){key='Respiratory Rate';kind='record';outUnit='breaths/min';average=true}
+    else if(type==='HKQuantityTypeIdentifierBloodPressureSystolic'){key='Systolic BP';kind='record';outUnit='mmHg';average=true}
+    else if(type==='HKQuantityTypeIdentifierBloodPressureDiastolic'){key='Diastolic BP';kind='record';outUnit='mmHg';average=true}
+    else if(type==='HKQuantityTypeIdentifierFlightsClimbed'){key='Flights Climbed';outUnit='flights'}
+    else if(type==='HKQuantityTypeIdentifierAppleExerciseTime'){key='Exercise Minutes';outUnit='min'}
+    else if(type==='HKCategoryTypeIdentifierSleepAnalysis'){
+     const val=n.getAttribute('value')||'';
+     if(!/Asleep|Core|Deep|REM|Unspecified/i.test(val)||/InBed|Awake/i.test(val))continue;
+     const end=n.getAttribute('endDate'),mins=(new Date(end)-new Date(start))/60000;
+     if(!(mins>0&&mins<1440)){skipped++;continue}
+     key='Sleep';v=mins/60;outUnit='hours';
+    }else continue;
+    if(value===null&&type!=='HKCategoryTypeIdentifierSleepAnalysis'){skipped++;continue}
+    if(!Number.isFinite(v)){skipped++;continue}
+    add(day,key,kind,v,outUnit,average);
+   }
+   for(const x of sums.values()){
+    const v=x.average?x.total/x.count:x.total;
+    if(x.kind==='record')addRecord(x.key,Number(v.toFixed(2)),x.unit,x.day+'T12:00:00','Apple Health import');
+    else addActivity(x.key,Number(v.toFixed(2)),x.unit,x.day,'Apple Health import');
+    imported++;
+   }
+   if(!imported){
+    const types=[...foundTypes.entries()].sort((a,b)=>b[1]-a[1]).slice(0,8).map(x=>x[0]+' ('+x[1]+')');
+    status.textContent=nodes.length
+     ?'The XML contains '+nodes.length+' Apple Health records, but none matched the importer yet. Record types found: '+(types.join(', ')||'type names unavailable')+'. No data was added. Please send me only this message (not the export file), so I can add the exact types.'
+     :'No <Record> entries were found. Please check that this is the regular Apple Health export.xml, not the CDA document. No data was added.';
+   }else{save();renderAll();status.textContent='Import complete: '+imported+' daily summaries added. '+skipped+' records were skipped. Review the dates and values in History & Trends. Avoid importing the same export again, as duplicates may be created.'}
+  }catch(err){status.textContent='Import failed: '+err.message}
+ };
+ reader.onerror=()=>{status.textContent='The browser could not read this file. Try selecting export.xml again.'};
  reader.readAsText(file);
 }
 function clearAllData(){if(!confirm('Permanently delete all Health Monitor records, activities and local snapshots from this browser? Download a backup first if needed.'))return;if(!confirm('Final confirmation: delete all local health data?'))return;db=blankDB();localStorage.removeItem(SNAP_KEY);save();renderAll();alert('Local health data deleted.')}
