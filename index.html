@@ -351,7 +351,7 @@ function importAppleHealth(){
  reader.readAsText(file);
 }
 
-function importSamsungHealth(){
+async function importSamsungHealth(){
  const file=document.getElementById('samsung-file').files[0],status=document.getElementById('samsung-import-status');
  if(!file){status.textContent='Please select the Samsung Health ZIP export (or a JSON/CSV file).';return}
  status.textContent='Reading Samsung Health export locally…';
