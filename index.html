@@ -5,13 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#211f1b">
 <title>Health Monitor</title>
-<script src="https://cdn.tailwindcss.com">
-// Restore the last open screen and selected date after a refresh.
-try{dashboardSelectedDate=localStorage.getItem('hm-dashboard-date')||dashboardSelectedDate;detailSelectedDate=localStorage.getItem('hm-detail-date')||dashboardSelectedDate;detailMetric=localStorage.getItem('hm-detail-metric')||detailMetric;detailPeriod=localStorage.getItem('hm-detail-period')||detailPeriod;}catch(e){}
-const validPages=['dashboard','detail','records','activity','trends','apple','backup','settings'];
-let initialPage='dashboard';try{const hash=location.hash.replace(/^#/,'');initialPage=validPages.includes(hash)?hash:(localStorage.getItem('hm-active-page')||'dashboard');}catch(e){}
-if(validPages.includes(initialPage))showPage(initialPage,false);
-</script>
+<script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{brand:{50:'#fbf6e9',100:'#f4e8c8',200:'#ead5a0',500:'#c4a45d',600:'#ad8a42',700:'#8f7134',800:'#725a2b',900:'#4c3c20'}}}}};</script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -220,6 +214,18 @@ main{background:linear-gradient(135deg,#f3f8ff 0%,#faf6ff 48%,#f2fbf7 100%)}
 .detail-date-top>.inline-flex{grid-column:1/-1!important;grid-row:3!important;width:100%!important;margin:0!important;justify-content:stretch!important;}
 .detail-date-top .period-btn{flex:1 1 0!important;min-width:0!important;}
 @media(max-width:380px){.detail-date-top{grid-template-columns:32px minmax(0,148px) 32px!important;column-gap:5px!important}.detail-date-top>.date-step:first-of-type,.detail-date-top>.date-step:last-of-type{width:32px!important;height:34px!important}.detail-date-top>#detail-date{width:148px!important;min-width:0!important;}}
+
+/* Use the same compact date selector dimensions throughout the app */
+.field[type="date"]{width:148px!important;max-width:148px!important;min-width:148px!important;height:36px!important;padding:0 7px!important;font-size:13px!important;box-sizing:border-box!important}
+.detail-date-top{display:grid!important;grid-template-columns:36px 148px 36px!important;grid-template-rows:auto 38px auto!important;justify-content:start!important;align-items:center!important;column-gap:7px!important;row-gap:9px!important;flex-wrap:nowrap!important;padding:12px!important}
+.detail-date-top>label{grid-column:1/-1!important;grid-row:1!important;margin:0!important}
+.detail-date-top>.date-step:first-of-type{grid-column:1!important;grid-row:2!important;width:36px!important;height:36px!important}
+.detail-date-top>input[type="date"]{grid-column:2!important;grid-row:2!important;width:148px!important;min-width:148px!important;max-width:148px!important;height:36px!important}
+.detail-date-top>.date-step:last-of-type{grid-column:3!important;grid-row:2!important;width:36px!important;height:36px!important}
+.detail-date-top>.inline-flex{grid-column:1/-1!important;grid-row:3!important;width:100%!important;margin:0!important;justify-content:stretch!important}
+.detail-date-top .period-btn{flex:1 1 0!important;min-width:0!important}
+@media(max-width:380px){.detail-date-top{grid-template-columns:32px 148px 32px!important;column-gap:5px!important;padding:10px!important}.detail-date-top>.date-step:first-of-type,.detail-date-top>.date-step:last-of-type{width:32px!important;height:34px!important}}
+
 </style>
 </head>
 <body class="min-h-full bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors">
@@ -253,7 +259,7 @@ main{background:linear-gradient(135deg,#f3f8ff 0%,#faf6ff 48%,#f2fbf7 100%)}
 <section id="page-dashboard" class="page space-y-6">
  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
   <div><p class="text-xs uppercase tracking-wider font-semibold text-brand-600 dark:text-brand-400">Personal health overview</p><h2 class="text-2xl font-bold mt-1">Your health, in focus</h2><p class="text-sm muted mt-1">A clearer view of your activity, sleep and recorded health measurements.</p></div>
-  <div class="flex flex-wrap items-center gap-2"><label for="dashboard-date-picker" class="text-sm font-semibold"><i class="fa-regular fa-calendar mr-2"></i>Select date</label><button class="date-step" aria-label="Previous day" onclick="shiftDashboardDate(-1)">‹</button><input id="dashboard-date-picker" class="field" type="date" onchange="setDashboardDate(this.value)" style="max-width:190px"><button class="date-step" aria-label="Next day" onclick="shiftDashboardDate(1)">›</button></div>
+  <div class="detail-date-top dashboard-date-top"><label for="dashboard-date-picker" class="text-sm font-semibold"><i class="fa-regular fa-calendar mr-2"></i>Select date</label><button class="date-step" aria-label="Previous day" onclick="shiftDashboardDate(-1)">‹</button><input id="dashboard-date-picker" class="field" type="date" onchange="setDashboardDate(this.value)" style="max-width:190px"><button class="date-step" aria-label="Next day" onclick="shiftDashboardDate(1)">›</button></div>
  </div>
  <div class="flex items-center justify-between gap-3">
   <div><h3 class="font-bold text-base">Your activity summary</h3><p id="period-caption" class="text-xs muted mt-1">Recorded data for selected date</p></div>
@@ -680,5 +686,17 @@ function renderMetricDetail(){
  applyPagePalette();
 }
 
+
+/* Restore navigation state only after the application functions and state exist. */
+try{
+ dashboardSelectedDate=localStorage.getItem('hm-dashboard-date')||dashboardSelectedDate;
+ detailSelectedDate=localStorage.getItem('hm-detail-date')||dashboardSelectedDate;
+ detailMetric=localStorage.getItem('hm-detail-metric')||detailMetric;
+ detailPeriod=localStorage.getItem('hm-detail-period')||detailPeriod;
+}catch(e){}
+const hmValidPages=['dashboard','detail','records','activity','trends','apple','backup','settings'];
+let hmInitialPage='dashboard';
+try{const hmHash=location.hash.replace(/^#/,'');hmInitialPage=hmValidPages.includes(hmHash)?hmHash:(localStorage.getItem('hm-active-page')||'dashboard');}catch(e){}
+if(hmValidPages.includes(hmInitialPage))showPage(hmInitialPage,false);
 </script>
 </body></html>
