@@ -359,7 +359,7 @@ function importSamsungHealth(){
  const norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
  const dateOf=o=>{for(const [k,v] of Object.entries(o||{})){if(/start.?time|start.?date|create.?time|date.?time|timestamp|date$/i.test(k)&&v){let d=typeof v==='number'?new Date(v<1e12?v*1000:v):new Date(String(v).replace(' ','T'));if(!isNaN(d))return d.toISOString().slice(0,10)}}return null};
  const number=(o,patterns)=>{for(const [k,v] of Object.entries(o||{})){if(patterns.some(p=>p.test(norm(k)))&&v!==''&&v!==null&&Number.isFinite(Number(v)))return Number(v)}return null};
- const rowsFrom=x=>Array.isArray(x)?x:(x&&typeof x==='object'?Object.values(x).filter(v=>v&&typeof v==='object'):[]);
+ const rowsFrom=x=>{const out=[];const walk=v=>{if(Array.isArray(v)){v.forEach(walk);return}if(v&&typeof v==='object'){if(Object.keys(v).some(k=>/start.?time|start.?date|create.?time|date.?time|timestamp|date$/i.test(k)))out.push(v);else Object.values(v).forEach(walk)}};walk(x);return out};
  const records=[],activities=[],seen=new Set();
  const add=(kind,type,val,unit,day,sourceFile)=>{if(!day||!Number.isFinite(val)||val<0)return;const sig=[kind,type,day,Math.round(val*100)/100].join('|');if(seen.has(sig))return;seen.add(sig);const entry={id:uid(),type,value:Number(val.toFixed(2)),unit,date:kind==='record'?day+'T12:00:00':day,note:'Imported from '+sourceFile,source:'Samsung Health import'};(kind==='record'?records:activities).push(entry)};
  const process=(obj,path)=>{const fileName=norm(path),rows=rowsFrom(obj);for(const row of rows){if(!row||typeof row!=='object')continue;const day=dateOf(row);if(!day)continue;const keys=Object.keys(row).map(norm).join(' '),label=fileName+' '+keys;let v=null,u='',t='',kind='activity';
