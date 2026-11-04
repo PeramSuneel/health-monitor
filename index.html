@@ -38,36 +38,66 @@ body{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe
 @media(max-width:640px){.bar-chart{gap:2px}.bar-value{font-size:8px}.bar-label{font-size:8px}.bar-track{max-width:15px}.bar-column{height:170px}.bar-track{height:120px}}
 @media(prefers-reduced-motion:reduce){.dash-hero,.metric-card,.vital-tile,.bar-fill{animation:none!important}.status-orbit{animation:none!important}.goal-fill,.period-btn{transition:none!important}}
 
-/* Premium champagne-gold Health Monitor theme */
-:root{color-scheme:light}
-body{background:#f7f6f2!important;color:#292722}
-html.dark body{background:#171715!important;color:#eeeae1}
-.panel{background:#fffefa;border-color:#e9e4d9;box-shadow:0 1px 3px rgba(49,40,23,.045)}
-.dark .panel{background:#24231f;border-color:#39362e}
-.field{background:#fbfaf6;color:#302d26;border-color:#ded7c8}
-.dark .field{background:#302e28;color:#f2eee5;border-color:#504a3c}
-.field:focus{border-color:#b99a58;box-shadow:0 0 0 3px rgba(185,154,88,.16)}
-.btn-primary,.nav-btn.active{background:#ad8a42!important;color:#fff!important}
-.btn-primary:hover{background:#8f7134!important}
-.tab-active,.period-btn.active{background:#ad8a42!important;color:#fff!important;box-shadow:0 2px 7px rgba(143,113,52,.18)}
-.dark .tab-active,.dark .period-btn.active{background:#c8aa69!important;color:#211e17!important}
-.period-btn:focus-visible{outline-color:#c4a45d}
-.status-orbit{background:#f4ead2;color:#9b7838}
-.dark .status-orbit{background:#3a3325;color:#e0c17c}
-.dash-hero:after{background:radial-gradient(circle,rgba(196,164,93,.18),transparent 70%)}
-.goal-fill{background:linear-gradient(90deg,#dfc98f,#ad8a42)}
-.bar-fill{background:linear-gradient(180deg,#dfc98f,#ad8a42)}
-.action-item.info>i{color:#ad8a42}
-.dark .action-item.info>i{color:#d6b975}
-.vital-tile{background:#faf8f2;border-color:#e9e4d9}
-.dark .vital-tile{background:#1d1c19;border-color:#39362e}
-.nav-btn.active{box-shadow:inset 3px 0 #e5d3a5}
-#sidebar{background:#24221e!important}
-#sidebar .border-slate-800{border-color:#3b372e!important}
-header{background:#fffefa!important;border-color:#e9e4d9!important}
-.dark header{background:#24231f!important;border-color:#39362e!important}
-body .bg-blue-50{background:#f8f2e5!important;border-color:#eadbb9!important;color:#65512b!important}
-.dark body .dark\\:bg-blue-950\\/30{background:#332d21!important;border-color:#51452e!important;color:#e5d3a5!important}
+/* Apple Health + Samsung Health inspired professional design system */
+:root{
+ --app-bg:#f4f6f8;--surface:#ffffff;--surface-soft:#f8fafc;--line:#e7ebf0;
+ --ink:#17212b;--muted-ink:#718096;--accent:#2563eb;--accent-strong:#1d4ed8;
+ --accent-soft:#eaf1ff;--sidebar:#ffffff;--sidebar-ink:#526174;
+ --shadow:0 2px 12px rgba(24,39,58,.045);--radius:18px;
+}
+html.dark{
+ color-scheme:dark;
+ --app-bg:#0c1117;--surface:#151d26;--surface-soft:#101820;--line:#273442;
+ --ink:#edf3f8;--muted-ink:#9aabba;--accent:#78a9ff;--accent-strong:#9abaff;
+ --accent-soft:#1c2b40;--sidebar:#111923;--sidebar-ink:#b6c3d0;
+ --shadow:0 3px 16px rgba(0,0,0,.18);
+}
+body{background:var(--app-bg)!important;color:var(--ink)!important;letter-spacing:-.01em}
+#sidebar{background:var(--sidebar)!important;color:var(--sidebar-ink)!important;border-right:1px solid var(--line)}
+#sidebar .border-b,#sidebar .border-t{border-color:var(--line)!important}
+#sidebar .font-bold.text-white{color:var(--ink)!important}
+#sidebar .text-slate-400{color:var(--muted-ink)!important}
+#sidebar .bg-brand-600{background:var(--accent)!important}
+.nav-btn{color:var(--sidebar-ink)!important;border-radius:11px;padding:.78rem .9rem;font-weight:550;transition:background .18s,color .18s}
+.nav-btn:hover{background:var(--surface-soft)!important;color:var(--ink)!important}
+.nav-btn.active{background:var(--accent-soft)!important;color:var(--accent-strong)!important;box-shadow:none!important}
+.dark .nav-btn.active{color:var(--accent-strong)!important}
+header{background:var(--surface)!important;border-color:var(--line)!important;box-shadow:0 1px 0 rgba(20,30,40,.025)!important;backdrop-filter:blur(16px)}
+header h1{color:var(--ink)}
+main{max-width:1500px!important;padding:clamp(18px,2.4vw,36px)!important}
+.panel{background:var(--surface)!important;border:1px solid var(--line)!important;border-radius:var(--radius)!important;box-shadow:var(--shadow)!important}
+.metric-card{min-height:142px;padding:19px!important}
+.metric-card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(24,39,58,.08)!important}
+.dark .metric-card:hover{box-shadow:0 10px 26px rgba(0,0,0,.24)!important}
+.muted,.text-slate-500{color:var(--muted-ink)!important}
+h1,h2,h3,h4,.font-bold{letter-spacing:-.025em}
+h2{font-weight:720!important}
+.dash-hero{background:linear-gradient(125deg,var(--surface) 0%,var(--accent-soft) 125%)!important;border-color:var(--line)!important}
+.dash-hero:after{width:250px;height:250px;right:3%;top:-155px;background:radial-gradient(circle,rgba(37,99,235,.13),transparent 70%)}
+.status-orbit{background:var(--accent-soft)!important;color:var(--accent)!important;border-radius:20px;width:64px;height:64px;flex-basis:64px}
+.dark .status-orbit{background:#21334a!important;color:#9abaff!important}
+.btn{border-radius:10px;padding:.68rem 1rem;font-weight:650}
+.btn-primary,.nav-btn.active{background:var(--accent)!important;color:#fff!important}
+.btn-primary:hover{background:var(--accent-strong)!important}
+.btn-secondary{background:var(--surface-soft)!important;color:var(--ink)!important;border:1px solid var(--line)!important}
+.field{background:var(--surface-soft)!important;color:var(--ink)!important;border-color:var(--line)!important;border-radius:10px}
+.field:focus{border-color:var(--accent)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent)!important}
+.period-btn{border-radius:9px;padding:.58rem .95rem}
+.period-btn.active,.tab-active{background:var(--accent)!important;color:#fff!important;box-shadow:0 2px 8px rgba(37,99,235,.18)!important}
+.dark .period-btn.active,.dark .tab-active{background:var(--accent)!important;color:#0c1724!important}
+.vital-tile,.action-item{background:var(--surface-soft)!important;border-color:var(--line)!important;border-radius:13px}
+.goal-fill,.bar-fill{background:linear-gradient(180deg,#62b5e8,#3478d4)!important}
+.goal-fill{background:linear-gradient(90deg,#63b8b1,#287f91)!important}
+.bar-track{background:var(--surface-soft)!important}
+.dash-icon{border-radius:12px;width:40px;height:40px}
+#page-dashboard .text-xs.uppercase{letter-spacing:.11em}
+#page-dashboard .grid{align-items:stretch}
+table{border-collapse:separate;border-spacing:0}
+thead th:first-child{border-top-left-radius:10px}
+thead th:last-child{border-top-right-radius:10px}
+@media(min-width:768px){#sidebar{position:sticky;top:0;height:100vh;min-height:100vh}main{padding-top:30px!important}}
+@media(max-width:767px){#sidebar{background:var(--sidebar)!important}main{padding:16px!important}.metric-card{min-height:126px;padding:14px!important}.panel{border-radius:15px!important}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
 </style>
 </head>
