@@ -194,6 +194,16 @@ main{background:linear-gradient(135deg,#f3f8ff 0%,#faf6ff 48%,#f2fbf7 100%)}
 .sleep-hypnogram{background:color-mix(in srgb,#e6edff 22%,var(--surface-soft))}
 .dark .sleep-hypnogram{background:color-mix(in srgb,#28375d 55%,var(--surface-soft))}
 
+
+/* Keep date navigation controls on one horizontal row */
+.detail-date-top{display:grid!important;grid-template-columns:38px minmax(0,1fr) 38px;align-items:center;gap:8px;flex-wrap:initial}
+.detail-date-top>label{grid-column:1/-1;margin-bottom:1px}
+.detail-date-top>.date-step:first-of-type{grid-column:1;grid-row:2}
+.detail-date-top>#detail-date{grid-column:2;grid-row:2;width:100%;max-width:none!important;min-width:0}
+.detail-date-top>.date-step:last-of-type{grid-column:3;grid-row:2}
+.detail-date-top>.inline-flex{grid-column:1/-1;grid-row:3;margin-left:0!important;justify-content:center;width:100%}
+.detail-date-top .period-btn{flex:1}
+
 </style>
 </head>
 <body class="min-h-full bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors">
