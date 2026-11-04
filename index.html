@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#171a19">
+<meta name="theme-color" content="#211f1b">
 <title>Health Monitor</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script>tailwind.config={darkMode:'class',theme:{extend:{colors:{brand:{50:'#f1f5f2',100:'#e2e9e3',200:'#cbd8ce',500:'#647b6b',600:'#526b59',700:'#405747',800:'#304338',900:'#202e25'}}}}};</script>
+<script>tailwind.config={darkMode:'class',theme:{extend:{colors:{brand:{50:'#fbf6e9',100:'#f4e8c8',200:'#ead5a0',500:'#c4a45d',600:'#ad8a42',700:'#8f7134',800:'#725a2b',900:'#4c3c20'}}}}};</script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 :root{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:light}
@@ -37,6 +37,38 @@ body{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe
 @keyframes riseIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}@keyframes barGrow{from{transform:scaleY(.05);opacity:.5}to{transform:scaleY(1);opacity:1}}@keyframes softPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 @media(max-width:640px){.bar-chart{gap:2px}.bar-value{font-size:8px}.bar-label{font-size:8px}.bar-track{max-width:15px}.bar-column{height:170px}.bar-track{height:120px}}
 @media(prefers-reduced-motion:reduce){.dash-hero,.metric-card,.vital-tile,.bar-fill{animation:none!important}.status-orbit{animation:none!important}.goal-fill,.period-btn{transition:none!important}}
+
+/* Premium champagne-gold Health Monitor theme */
+:root{color-scheme:light}
+body{background:#f7f6f2!important;color:#292722}
+html.dark body{background:#171715!important;color:#eeeae1}
+.panel{background:#fffefa;border-color:#e9e4d9;box-shadow:0 1px 3px rgba(49,40,23,.045)}
+.dark .panel{background:#24231f;border-color:#39362e}
+.field{background:#fbfaf6;color:#302d26;border-color:#ded7c8}
+.dark .field{background:#302e28;color:#f2eee5;border-color:#504a3c}
+.field:focus{border-color:#b99a58;box-shadow:0 0 0 3px rgba(185,154,88,.16)}
+.btn-primary,.nav-btn.active{background:#ad8a42!important;color:#fff!important}
+.btn-primary:hover{background:#8f7134!important}
+.tab-active,.period-btn.active{background:#ad8a42!important;color:#fff!important;box-shadow:0 2px 7px rgba(143,113,52,.18)}
+.dark .tab-active,.dark .period-btn.active{background:#c8aa69!important;color:#211e17!important}
+.period-btn:focus-visible{outline-color:#c4a45d}
+.status-orbit{background:#f4ead2;color:#9b7838}
+.dark .status-orbit{background:#3a3325;color:#e0c17c}
+.dash-hero:after{background:radial-gradient(circle,rgba(196,164,93,.18),transparent 70%)}
+.goal-fill{background:linear-gradient(90deg,#dfc98f,#ad8a42)}
+.bar-fill{background:linear-gradient(180deg,#dfc98f,#ad8a42)}
+.action-item.info>i{color:#ad8a42}
+.dark .action-item.info>i{color:#d6b975}
+.vital-tile{background:#faf8f2;border-color:#e9e4d9}
+.dark .vital-tile{background:#1d1c19;border-color:#39362e}
+.nav-btn.active{box-shadow:inset 3px 0 #e5d3a5}
+#sidebar{background:#24221e!important}
+#sidebar .border-slate-800{border-color:#3b372e!important}
+header{background:#fffefa!important;border-color:#e9e4d9!important}
+.dark header{background:#24231f!important;border-color:#39362e!important}
+body .bg-blue-50{background:#f8f2e5!important;border-color:#eadbb9!important;color:#65512b!important}
+.dark body .dark\\:bg-blue-950\\/30{background:#332d21!important;border-color:#51452e!important;color:#e5d3a5!important}
+
 </style>
 </head>
 <body class="min-h-full bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors">
