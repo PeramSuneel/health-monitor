@@ -175,6 +175,15 @@ thead th:last-child{border-top-right-radius:10px}
  <div class="rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 p-4 text-xs muted leading-relaxed"><i class="fa-solid fa-shield-heart mr-2 text-brand-600"></i><strong>Safety:</strong> Do not use this app for emergencies or change medicines based on its suggestions. If you have chest pain, severe breathing difficulty, fainting, sudden weakness or other severe symptoms, seek urgent medical care.</div>
 </section>
 
+<section id="page-detail" class="page hidden space-y-5">
+ <div><button onclick="showPage('dashboard')" class="text-sm font-semibold mb-3" style="color:var(--accent)"><i class="fa-solid fa-arrow-left mr-2"></i>Back to dashboard</button><h2 id="detail-title" class="text-2xl font-bold">Metric details</h2><p id="detail-subtitle" class="text-sm muted mt-1"></p>
+ <div class="inline-flex rounded-xl p-1 gap-1 mt-4" style="background:var(--surface-soft);border:1px solid var(--line)"><button class="period-btn active" data-detail-period="daily" onclick="setDetailPeriod('daily')">Day</button><button class="period-btn" data-detail-period="weekly" onclick="setDetailPeriod('weekly')">Week</button><button class="period-btn" data-detail-period="monthly" onclick="setDetailPeriod('monthly')">Month</button></div></div>
+ <div id="detail-summary" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
+ <div class="panel p-5"><h3 class="font-bold">Breakdown</h3><p class="text-xs muted mt-1 mb-4">Only values present in your watch exports are shown.</p><div id="detail-breakdown" class="space-y-3"></div></div>
+ <div class="panel p-5"><h3 class="font-bold mb-3">History & source records</h3><div id="detail-history" class="overflow-x-auto"></div></div>
+ <p class="text-xs muted">Apple and Samsung may classify the same metric differently. Source labels are retained; missing values are never estimated.</p>
+</section>
+
 <section id="page-records" class="page hidden space-y-5">
  <div><h2 class="text-2xl font-bold">Health Records</h2><p class="text-sm muted mt-1">Record vital signs and body measurements with dates and notes.</p></div>
  <div class="panel p-5">
@@ -250,12 +259,32 @@ function loadDB(){try{const v=JSON.parse(localStorage.getItem(DB_KEY));return v&
 function save(){try{localStorage.setItem(DB_KEY,JSON.stringify(db));const el=document.getElementById('save-status');if(el)el.textContent='Saved locally · '+new Date().toLocaleTimeString();}catch(e){alert('The browser could not save this data. Please download a backup and free browser storage.');}}
 function escapeHTML(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function fmt(n,d=0){return Number(n).toLocaleString(undefined,{maximumFractionDigits:d})}
-function showPage(page){document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));document.getElementById('page-'+page).classList.remove('hidden');document.querySelectorAll('.nav-btn').forEach(x=>x.classList.toggle('active',x.dataset.page===page));const titles={dashboard:'Dashboard',records:'Health Records',activity:'Activity & Sleep',trends:'History & Trends',apple:'Apple Health Import',backup:'Backup & Restore',settings:'Settings'};document.getElementById('page-title').textContent=titles[page]||'Health Monitor';if(innerWidth<768)toggleMenu(true);renderAll();window.scrollTo({top:0,behavior:'smooth'})}
+function showPage(page){document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));document.getElementById('page-'+page).classList.remove('hidden');document.querySelectorAll('.nav-btn').forEach(x=>x.classList.toggle('active',x.dataset.page===page));const titles={dashboard:'Dashboard',detail:'Metric details',records:'Health Records',activity:'Activity & Sleep',trends:'History & Trends',apple:'Apple Health Import',backup:'Backup & Restore',settings:'Settings'};document.getElementById('page-title').textContent=titles[page]||'Health Monitor';if(innerWidth<768)toggleMenu(true);renderAll();window.scrollTo({top:0,behavior:'smooth'})}
 function toggleMenu(forceClose=false){const s=document.getElementById('sidebar'),scrim=document.getElementById('mobile-scrim');if(forceClose){s.classList.remove('open');scrim.classList.remove('show');return}s.classList.toggle('open');scrim.classList.toggle('show')}
 function applyTheme(dark){document.documentElement.classList.toggle('dark',!!dark);document.documentElement.style.colorScheme=dark?'dark':'light';localStorage.setItem(THEME_KEY,dark?'dark':'light');const icon=document.getElementById('theme-icon');if(icon)icon.className=dark?'fa-solid fa-sun':'fa-solid fa-moon';const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=dark?'#0c1117':'#f4f6f8'}
 function toggleTheme(){applyTheme(!document.documentElement.classList.contains('dark'))}
 function initTheme(){const t=localStorage.getItem(THEME_KEY);const dark=t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;applyTheme(dark)}
 function dailySnapshot(){try{const day=today();let snaps=JSON.parse(localStorage.getItem(SNAP_KEY)||'{}');if(!snaps[day]){snaps[day]={createdAt:new Date().toISOString(),data:JSON.stringify(db)};const keys=Object.keys(snaps).sort();while(keys.length>14)delete snaps[keys.shift()];localStorage.setItem(SNAP_KEY,JSON.stringify(snaps))}}catch(e){}}
+let detailMetric='sleep',detailPeriod='daily';
+const detailConfig={sleep:{title:'Sleep',types:['Sleep','Deep Sleep','Core Sleep','REM Sleep','Awake','In Bed'],unit:'hours'},steps:{title:'Steps',types:['Steps'],unit:'steps'},calories:{title:'Calories',types:['Active Energy','Resting Energy','Workout Calories'],unit:'kcal'},distance:{title:'Walking & distance',types:['Walking Distance','Cycling Distance','Workout Distance'],unit:'km'},workouts:{title:'Workouts',types:['Exercise Minutes','Workout Duration','Workout Count','Workout Calories','Workout Distance'],unit:'minutes'},floors:{title:'Flights climbed',types:['Flights Climbed'],unit:'flights'},heart:{title:'Heart rate',types:['Heart Rate','Resting Heart Rate','Heart Rate Variability'],unit:'bpm'},water:{title:'Water',types:['Water'],unit:'ml'}};
+function detailRange(){const days=detailPeriod==='daily'?1:detailPeriod==='weekly'?7:30;const end=new Date();end.setHours(0,0,0,0);const start=new Date(end);start.setDate(start.getDate()-days+1);const key=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');return {start:key(start),end:key(end)}}
+function openMetricDetail(key){detailMetric=key;detailPeriod='daily';renderMetricDetail();showPage('detail')}
+function setDetailPeriod(p){detailPeriod=p;document.querySelectorAll('[data-detail-period]').forEach(b=>b.classList.toggle('active',b.dataset.detailPeriod===p));renderMetricDetail()}
+function renderMetricDetail(){
+ const cfg=detailConfig[detailMetric]||detailConfig.steps,w=detailRange(),types=cfg.types;
+ document.getElementById('detail-title').textContent=cfg.title;
+ document.getElementById('detail-subtitle').textContent='Recorded data · '+w.start+' to '+w.end;
+ document.querySelectorAll('[data-detail-period]').forEach(b=>b.classList.toggle('active',b.dataset.detailPeriod===detailPeriod));
+ const rows=db.activities.filter(x=>types.includes(x.type)&&x.date.slice(0,10)>=w.start&&x.date.slice(0,10)<=w.end);
+ const records=db.records.filter(x=>types.includes(x.type)&&x.date.slice(0,10)>=w.start&&x.date.slice(0,10)<=w.end);
+ const total=rows.reduce((s,x)=>s+Number(x.value||0),0),uniqueDays=new Set([...rows,...records].map(x=>x.date.slice(0,10))).size;
+ const cards=[['Activity entries',rows.length],['Measurement entries',records.length],['Total recorded',fmt(total,1)+' '+cfg.unit],['Days with data',uniqueDays]];
+ document.getElementById('detail-summary').innerHTML=cards.map(([a,b])=>'<div class="panel p-4"><div class="text-xs muted">'+a+'</div><div class="text-xl font-bold mt-2">'+b+'</div></div>').join('');
+ const byType=types.map(t=>({type:t,items:rows.filter(x=>x.type===t),records:records.filter(x=>x.type===t)})).filter(x=>x.items.length||x.records.length);
+ document.getElementById('detail-breakdown').innerHTML=byType.length?byType.map(x=>{const sum=x.items.reduce((s,a)=>s+Number(a.value||0),0),unit=x.items[0]?.unit||x.records[0]?.unit||'';return '<div class="rounded-xl p-3" style="background:var(--surface-soft);border:1px solid var(--line)"><div class="flex items-center justify-between gap-3"><div><div class="font-semibold text-sm">'+escapeHTML(x.type)+'</div><div class="text-xs muted mt-1">'+x.items.length+' activity entries · '+x.records.length+' measurements</div></div><div class="text-lg font-bold">'+fmt(sum,1)+' <span class="text-xs muted font-normal">'+escapeHTML(unit)+'</span></div></div></div>'}).join(''):'<div class="py-8 text-center"><div class="font-semibold">No '+escapeHTML(cfg.title.toLowerCase())+' records for this period</div><p class="text-sm muted mt-1">Import the relevant watch export to see your data. No values are estimated.</p></div>';
+ const all=[...rows.map(x=>({...x,kind:'Activity'})),...records.map(x=>({...x,kind:'Measurement'}))].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+ document.getElementById('detail-history').innerHTML=tableHTML(['Type','Value','Date','Source','Notes'],all.map(x=>[escapeHTML(x.kind+' · '+x.type),escapeHTML(String(x.value))+' '+escapeHTML(x.unit||''),escapeHTML(String(x.date).replace('T',' ').slice(0,19)),escapeHTML(x.source||'Manual'),escapeHTML(x.note||'—')]));
+}
 function renderAll(){renderDashboard();renderRecords();renderActivity();renderTrends();renderBackup();renderSettings()}
 function metricToday(type){return db.activities.filter(a=>a.date===today()&&a.type===type).reduce((s,a)=>s+Number(a.value||0),0)}
 function latestRecord(type){return db.records.filter(r=>r.type===type).sort((a,b)=>b.date.localeCompare(a.date))[0]}
@@ -315,9 +344,7 @@ function renderHealthActions(w,steps,sleep,water,types){
  const icons={info:'fa-circle-info',tip:'fa-lightbulb',good:'fa-circle-check'};
  document.getElementById('health-actions').innerHTML=actions.map(([kind,title,copy])=>'<div class="action-item '+kind+'"><i class="fa-solid '+icons[kind]+' mt-0.5"></i><div><div class="text-sm font-semibold">'+title+'</div><p class="text-xs muted mt-1">'+copy+'</p></div></div>').join('');
  const title=document.getElementById('health-status-title'),copy=document.getElementById('health-status-copy');
- if(!db.activities.length&&!db.records.length){title.textContent='Not enough data yet';copy.textContent='Start recording or importing data. The app will show patterns as your history grows.';}
- else if(actions.some(a=>a[0]==='info')){title.textContent='Your health picture is incomplete';copy.textContent='Some important tracking information is missing. Review the suggested next steps below.';}
- else{title.textContent='Your tracking is progressing';copy.textContent='Some selected activity goals are being met. This is a tracking summary, not a medical clearance.';}
+ if(!db.activities.length&&!db.records.length){title.textContent='Ready to track your health';copy.textContent='Import Apple Health or Samsung Health data to begin building your personal timeline.';}else{title.textContent='Your health data at a glance';copy.textContent='Showing the information available in your imported and manually entered records. Missing measurements are simply not recorded.';}
 }
 function renderDashboardChart(){
  const host=document.getElementById('dashboard-chart');if(!host)return;
