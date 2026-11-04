@@ -267,6 +267,7 @@ function initTheme(){const t=localStorage.getItem(THEME_KEY);const dark=t?t==='d
 function dailySnapshot(){try{const day=today();let snaps=JSON.parse(localStorage.getItem(SNAP_KEY)||'{}');if(!snaps[day]){snaps[day]={createdAt:new Date().toISOString(),data:JSON.stringify(db)};const keys=Object.keys(snaps).sort();while(keys.length>14)delete snaps[keys.shift()];localStorage.setItem(SNAP_KEY,JSON.stringify(snaps))}}catch(e){}}
 let detailMetric='sleep',detailPeriod='daily';
 const detailConfig={sleep:{title:'Sleep',types:['Sleep','Deep Sleep','Core Sleep','REM Sleep','Awake','In Bed'],unit:'hours'},steps:{title:'Steps',types:['Steps'],unit:'steps'},calories:{title:'Calories',types:['Active Energy','Resting Energy','Workout Calories'],unit:'kcal'},distance:{title:'Walking & distance',types:['Walking Distance','Cycling Distance','Workout Distance'],unit:'km'},workouts:{title:'Workouts',types:['Exercise Minutes','Workout Duration','Workout Count','Workout Calories','Workout Distance'],unit:'minutes'},floors:{title:'Flights climbed',types:['Flights Climbed'],unit:'flights'},heart:{title:'Heart rate',types:['Heart Rate','Resting Heart Rate','Heart Rate Variability'],unit:'bpm'},water:{title:'Water',types:['Water'],unit:'ml'}};
+function bindMetricCards(){const keys=['steps','calories','distance','sleep','water','workouts','floors','heart'];document.querySelectorAll('#page-dashboard .metric-card').forEach((card,i)=>{card.style.cursor='pointer';card.setAttribute('role','button');card.setAttribute('tabindex','0');card.setAttribute('aria-label','Open '+(detailConfig[keys[i]]?.title||'health metric')+' details');card.addEventListener('click',()=>openMetricDetail(keys[i]));card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openMetricDetail(keys[i])}})})}
 function detailRange(){const days=detailPeriod==='daily'?1:detailPeriod==='weekly'?7:30;const end=new Date();end.setHours(0,0,0,0);const start=new Date(end);start.setDate(start.getDate()-days+1);const key=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');return {start:key(start),end:key(end)}}
 function openMetricDetail(key){detailMetric=key;detailPeriod='daily';renderMetricDetail();showPage('detail')}
 function setDetailPeriod(p){detailPeriod=p;document.querySelectorAll('[data-detail-period]').forEach(b=>b.classList.toggle('active',b.dataset.detailPeriod===p));renderMetricDetail()}
@@ -414,15 +415,17 @@ function importAppleHealth(){
     else if(type==='HKQuantityTypeIdentifierAppleExerciseTime'){key='Exercise Minutes';outUnit='min'}
     else if(type==='HKCategoryTypeIdentifierSleepAnalysis'){
      const val=n.getAttribute('value')||'';
-     if(!/Asleep|Core|Deep|REM|Unspecified/i.test(val)||/InBed|Awake/i.test(val))continue;
      const end=n.getAttribute('endDate'),mins=(new Date(end)-new Date(start))/60000;
      if(!(mins>0&&mins<1440)){skipped++;continue}
-     key='Sleep';v=mins/60;outUnit='hours';
+     if(/InBed/i.test(val)){key='In Bed'}else if(/Awake/i.test(val)){key='Awake'}else if(/Deep/i.test(val)){key='Deep Sleep'}else if(/REM/i.test(val)){key='REM Sleep'}else if(/Core/i.test(val)){key='Core Sleep'}else if(/Asleep|Unspecified/i.test(val)){key='Sleep'}else continue;
+     v=mins/60;outUnit='hours';
     }else continue;
     if(value===null&&type!=='HKCategoryTypeIdentifierSleepAnalysis'){skipped++;continue}
     if(!Number.isFinite(v)){skipped++;continue}
     add(day,key,kind,v,outUnit,average);
    }
+   const workouts=[...xml.getElementsByTagName('Workout')];
+   for(const w of workouts){const start=w.getAttribute('startDate')||'',day=dateKey(start);if(!day)continue;const duration=Number(w.getAttribute('duration')),durationUnit=(w.getAttribute('durationUnit')||'min').toLowerCase();if(Number.isFinite(duration)&&duration>0){const mins=durationUnit.includes('sec')?duration/60:durationUnit.includes('hour')?duration*60:duration;add(day,'Workout Duration','activity',mins,'min');}add(day,'Workout Count','activity',1,'sessions');const energy=Number(w.getAttribute('totalEnergyBurned'));if(Number.isFinite(energy)&&energy>0)add(day,'Workout Calories','activity',energy,'kcal');const distance=Number(w.getAttribute('totalDistance'));if(Number.isFinite(distance)&&distance>0){const u=(w.getAttribute('totalDistanceUnit')||'km').toLowerCase();const km=u==='m'?distance/1000:u==='mi'?distance*1.609344:distance;add(day,'Workout Distance','activity',km,'km');}}
    for(const x of sums.values()){
     const v=x.average?x.total/x.count:x.total;
     if(x.kind==='record')addRecord(x.key,Number(v.toFixed(2)),x.unit,x.day+'T12:00:00','Apple Health import');
@@ -473,6 +476,6 @@ async function importSamsungHealth(){
 }
 
 function clearAllData(){if(!confirm('Permanently delete all Health Monitor records, activities and local snapshots from this browser? Download a backup first if needed.'))return;if(!confirm('Final confirmation: delete all local health data?'))return;db=blankDB();localStorage.removeItem(SNAP_KEY);save();renderAll();alert('Local health data deleted.')}
-initTheme();document.getElementById('r-date').value=localDateTime();document.getElementById('a-date').value=today();dailySnapshot();renderAll();document.getElementById('filter-from').value=new Date(Date.now()-30*86400000).toISOString().slice(0,10);document.getElementById('filter-to').value=today();renderTrends();
+initTheme();bindMetricCards();document.getElementById('r-date').value=localDateTime();document.getElementById('a-date').value=today();dailySnapshot();renderAll();document.getElementById('filter-from').value=new Date(Date.now()-30*86400000).toISOString().slice(0,10);document.getElementById('filter-to').value=today();renderTrends();
 </script>
 </body></html>
