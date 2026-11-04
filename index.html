@@ -337,6 +337,7 @@ function setDetailPeriod(p){detailPeriod=p;renderMetricDetail()}
 function renderMetricDetail(){
  const cfg=detailConfig[detailMetric]||detailConfig.steps,w=detailRange(),types=cfg.types;
  renderDetailNavigation();
+ renderDetailNavigation();
  document.getElementById('detail-title').textContent=cfg.title;
  const dateInput=document.getElementById('detail-date');if(dateInput){dateInput.value=detailSelectedDate;dateInput.max=hmDayKey(new Date());}
  document.getElementById('detail-subtitle').textContent='Recorded data · '+w.start+' to '+w.end;
