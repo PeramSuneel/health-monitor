@@ -3,10 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#1e3a8a">
+<meta name="theme-color" content="#171a19">
 <title>Health Monitor</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script>tailwind.config={darkMode:'class',theme:{extend:{colors:{brand:{50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a'}}}}};</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>tailwind.config={darkMode:'class',theme:{extend:{colors:{brand:{50:'#f1f5f2',100:'#e2e9e3',200:'#cbd8ce',500:'#647b6b',600:'#526b59',700:'#405747',800:'#304338',900:'#202e25'}}}}};</script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 :root{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:light}
@@ -14,13 +15,13 @@ html.dark{color-scheme:dark}
 *{box-sizing:border-box}
 body{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:5px}.dark ::-webkit-scrollbar-thumb{background:#475569}
-.tab-active{background:#2563eb!important;color:#fff!important}.dark .tab-active{background:#3b82f6!important;color:#fff!important}
+.tab-active{background:#526b59!important;color:#fff!important}.dark .tab-active{background:#83b995!important;color:#142019!important}
 .metric-card{transition:transform .16s ease,box-shadow .16s ease}.metric-card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(15,23,42,.08)}
 .field{width:100%;border:1px solid #cbd5e1;border-radius:.55rem;padding:.62rem .75rem;background:#f8fafc;color:#1e293b;font-size:.82rem;outline:none}
 .dark .field{background:#334155;border-color:#475569;color:#f8fafc}
 .field:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.13)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-radius:.55rem;padding:.62rem .9rem;font-size:.78rem;font-weight:650;transition:.15s}
-.btn-primary{background:#2563eb;color:white}.btn-primary:hover{background:#1d4ed8}
+.btn-primary{background:#526b59;color:white}.btn-primary:hover{background:#405747}
 .btn-secondary{background:#e2e8f0;color:#334155}.dark .btn-secondary{background:#475569;color:#f1f5f9}
 .btn-danger{background:#e11d48;color:#fff}
 .panel{background:#fff;border:1px solid #e2e8f0;border-radius:.85rem;box-shadow:0 1px 3px rgba(15,23,42,.04)}
@@ -28,11 +29,11 @@ body{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe
 .muted{color:#64748b}.dark .muted{color:#94a3b8}
 .nav-btn{display:flex;align-items:center;gap:.75rem;width:100%;padding:.72rem .85rem;border-radius:.6rem;color:#cbd5e1;font-size:.83rem;text-align:left}
 .nav-btn:hover{background:#1e293b;color:white}
-.nav-btn.active{background:#2563eb;color:white}
+.nav-btn.active{background:#526b59;color:white}
 @media(max-width:767px){#sidebar{position:fixed;inset:0 auto 0 0;width:17rem;transform:translateX(-105%);transition:transform .2s;z-index:50}#sidebar.open{transform:translateX(0)}#mobile-scrim.show{display:block}main{padding:1rem!important}.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
-.period-btn{padding:.48rem .85rem;border-radius:.5rem;font-size:.75rem;font-weight:650;color:#64748b;transition:background .25s,color .25s,transform .25s}.period-btn.active{background:#2563eb;color:#fff;box-shadow:0 2px 7px rgba(37,99,235,.2)}.period-btn:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}
-.dash-hero{position:relative;overflow:hidden;animation:riseIn .55s ease both}.dash-hero:after{content:'';position:absolute;width:190px;height:190px;border-radius:50%;right:45px;top:-120px;background:radial-gradient(circle,rgba(59,130,246,.12),transparent 70%);pointer-events:none}.status-orbit{width:58px;height:58px;flex:0 0 58px;border-radius:18px;display:grid;place-items:center;background:#eff6ff;color:#2563eb;font-size:1.55rem;animation:softPulse 3s ease-in-out infinite}.dark .status-orbit{background:#334155;color:#93c5fd}.dash-icon{width:36px;height:36px;border-radius:11px;background:#f1f5f9;display:grid;place-items:center}.dark .dash-icon{background:#334155}.vital-tile{padding:12px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;min-width:0;animation:riseIn .35s ease both}.dark .vital-tile{background:#0f172a;border-color:#334155}.goal-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#3b82f6,#2563eb);transition:width .8s cubic-bezier(.2,.8,.2,1)}.action-item{display:flex;gap:11px;padding:11px;border-radius:11px;background:#f8fafc;border:1px solid #e2e8f0}.dark .action-item{background:#0f172a;border-color:#334155}.action-item.info>i{color:#2563eb}.action-item.tip>i{color:#d97706}.action-item.good>i{color:#059669}.chart-area{min-height:230px}.bar-chart{display:grid;grid-template-columns:repeat(30,minmax(0,1fr));gap:5px;align-items:end;min-height:190px;padding:12px 2px 0}.bar-column{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:190px;gap:7px}.bar-value{font-size:9px;color:#64748b;min-height:12px;white-space:nowrap;overflow:hidden;max-width:100%}.bar-track{height:140px;width:100%;max-width:24px;display:flex;align-items:flex-end;border-radius:7px;background:#f1f5f9;overflow:hidden}.dark .bar-track{background:#334155}.bar-fill{height:var(--bar-height);width:100%;border-radius:7px 7px 3px 3px;background:linear-gradient(180deg,#60a5fa,#2563eb);transform-origin:bottom;animation:barGrow .75s cubic-bezier(.2,.8,.2,1) both}.bar-label{font-size:9px;color:#64748b;white-space:nowrap;transform:rotate(-35deg);transform-origin:top center}.chart-empty{min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#94a3b8;text-align:center}.metric-card{animation:riseIn .45s ease both}.metric-card:nth-child(2){animation-delay:.04s}.metric-card:nth-child(3){animation-delay:.08s}.metric-card:nth-child(4){animation-delay:.12s}.metric-card:nth-child(5){animation-delay:.16s}.metric-card:nth-child(6){animation-delay:.2s}.metric-card:nth-child(7){animation-delay:.24s}.metric-card:nth-child(8){animation-delay:.28s}
+.period-btn{padding:.48rem .85rem;border-radius:.5rem;font-size:.75rem;font-weight:650;color:#64748b;transition:background .25s,color .25s,transform .25s}.period-btn.active{background:#526b59;color:#fff;box-shadow:0 2px 7px rgba(30,46,37,.14)}.period-btn:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}
+.dash-hero{position:relative;overflow:hidden;animation:riseIn .55s ease both}.dash-hero:after{content:'';position:absolute;width:190px;height:190px;border-radius:50%;right:45px;top:-120px;background:radial-gradient(circle,rgba(59,130,246,.12),transparent 70%);pointer-events:none}.status-orbit{width:58px;height:58px;flex:0 0 58px;border-radius:18px;display:grid;place-items:center;background:#eff6ff;color:#2563eb;font-size:1.55rem;animation:softPulse 3s ease-in-out infinite}.dark .status-orbit{background:#334155;color:#93c5fd}.dash-icon{width:36px;height:36px;border-radius:11px;background:#f1f5f9;display:grid;place-items:center}.dark .dash-icon{background:#334155}.vital-tile{padding:12px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;min-width:0;animation:riseIn .35s ease both}.dark .vital-tile{background:#0f172a;border-color:#334155}.goal-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#83b995,#526b59);transition:width .8s cubic-bezier(.2,.8,.2,1)}.action-item{display:flex;gap:11px;padding:11px;border-radius:11px;background:#f8fafc;border:1px solid #e2e8f0}.dark .action-item{background:#0f172a;border-color:#334155}.action-item.info>i{color:#2563eb}.action-item.tip>i{color:#d97706}.action-item.good>i{color:#059669}.chart-area{min-height:230px}.bar-chart{display:grid;grid-template-columns:repeat(30,minmax(0,1fr));gap:5px;align-items:end;min-height:190px;padding:12px 2px 0}.bar-column{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:190px;gap:7px}.bar-value{font-size:9px;color:#64748b;min-height:12px;white-space:nowrap;overflow:hidden;max-width:100%}.bar-track{height:140px;width:100%;max-width:24px;display:flex;align-items:flex-end;border-radius:7px;background:#f1f5f9;overflow:hidden}.dark .bar-track{background:#334155}.bar-fill{height:var(--bar-height);width:100%;border-radius:7px 7px 3px 3px;background:linear-gradient(180deg,#83b995,#526b59);transform-origin:bottom;animation:barGrow .75s cubic-bezier(.2,.8,.2,1) both}.bar-label{font-size:9px;color:#64748b;white-space:nowrap;transform:rotate(-35deg);transform-origin:top center}.chart-empty{min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#94a3b8;text-align:center}.metric-card{animation:riseIn .45s ease both}.metric-card:nth-child(1) .dash-icon{color:#299d68;background:#eaf5ee}.metric-card:nth-child(2) .dash-icon{color:#d88b2e;background:#fbf1e3}.metric-card:nth-child(3) .dash-icon{color:#369b9a;background:#e8f4f2}.metric-card:nth-child(4) .dash-icon{color:#8871ce;background:#f0edfa}.metric-card:nth-child(5) .dash-icon{color:#4296d5;background:#eaf3fa}.metric-card:nth-child(6) .dash-icon{color:#e46d78;background:#faecee}.metric-card:nth-child(7) .dash-icon{color:#c17c4b;background:#f8eee7}.metric-card:nth-child(8) .dash-icon{color:#d66a78;background:#faecee}.dark .metric-card:nth-child(1) .dash-icon{color:#62c995;background:#20372c}.dark .metric-card:nth-child(2) .dash-icon{color:#f2b45e;background:#3a3021}.dark .metric-card:nth-child(3) .dash-icon{color:#69c5c1;background:#203837}.dark .metric-card:nth-child(4) .dash-icon{color:#b5a1f0;background:#302944}.dark .metric-card:nth-child(5) .dash-icon{color:#75b8eb;background:#203344}.dark .metric-card:nth-child(6) .dash-icon{color:#f28c96;background:#3b292d}.dark .metric-card:nth-child(7) .dash-icon{color:#e0a477;background:#3a2d25}.dark .metric-card:nth-child(8) .dash-icon{color:#f28c96;background:#3b292d}.metric-card:nth-child(2){animation-delay:.04s}.metric-card:nth-child(3){animation-delay:.08s}.metric-card:nth-child(4){animation-delay:.12s}.metric-card:nth-child(5){animation-delay:.16s}.metric-card:nth-child(6){animation-delay:.2s}.metric-card:nth-child(7){animation-delay:.24s}.metric-card:nth-child(8){animation-delay:.28s}
 @keyframes riseIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}@keyframes barGrow{from{transform:scaleY(.05);opacity:.5}to{transform:scaleY(1);opacity:1}}@keyframes softPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 @media(max-width:640px){.bar-chart{gap:2px}.bar-value{font-size:8px}.bar-label{font-size:8px}.bar-track{max-width:15px}.bar-column{height:170px}.bar-track{height:120px}}
 @media(prefers-reduced-motion:reduce){.dash-hero,.metric-card,.vital-tile,.bar-fill{animation:none!important}.status-orbit{animation:none!important}.goal-fill,.period-btn{transition:none!important}}
@@ -52,7 +53,7 @@ body{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe
   <button class="nav-btn" data-page="records" onclick="showPage('records')"><i class="fa-solid fa-notes-medical w-5 text-center"></i>Health Records</button>
   <button class="nav-btn" data-page="activity" onclick="showPage('activity')"><i class="fa-solid fa-person-walking w-5 text-center"></i>Activity & Sleep</button>
   <button class="nav-btn" data-page="trends" onclick="showPage('trends')"><i class="fa-solid fa-chart-line w-5 text-center"></i>History & Trends</button>
-  <button class="nav-btn" data-page="apple" onclick="showPage('apple')"><i class="fa-brands fa-apple w-5 text-center"></i>Apple Health Import</button>
+  <button class="nav-btn" data-page="apple" onclick="showPage('apple')"><i class="fa-solid fa-mobile-screen-button w-5 text-center"></i>Import Health Data</button>
   <button class="nav-btn" data-page="backup" onclick="showPage('backup')"><i class="fa-solid fa-database w-5 text-center"></i>Backup & Restore</button>
   <button class="nav-btn" data-page="settings" onclick="showPage('settings')"><i class="fa-solid fa-gear w-5 text-center"></i>Settings</button>
  </nav>
@@ -147,16 +148,14 @@ body{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe
 </section>
 
 <section id="page-apple" class="page hidden space-y-5">
- <div><h2 class="text-2xl font-bold">Apple Health Import</h2><p class="text-sm muted mt-1">Import an Apple Health export file to bring supported measurements into your dashboard.</p></div>
- <div class="panel p-5 space-y-4">
-  <div class="flex gap-3 items-start"><div class="w-11 h-11 rounded-xl bg-slate-100 dark:bg-slate-700 grid place-items-center text-xl"><i class="fa-brands fa-apple"></i></div><div><h3 class="font-bold">Import Apple Health export.xml</h3><p class="text-xs muted mt-1">On iPhone: Health app → profile picture → Export All Health Data → Export. Transfer the ZIP to your computer or phone, extract it, then select export.xml here.</p></div></div>
-  <div class="rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 p-3 text-xs text-amber-900 dark:text-amber-200"><i class="fa-solid fa-lock mr-1"></i>Health exports contain sensitive information. Choose the file locally; it is processed in this browser and is not sent to GitHub by this app.</div>
-  <input type="file" id="apple-file" accept=".xml,text/xml,application/xml" class="field">
-  <button class="btn btn-primary" onclick="importAppleHealth()"><i class="fa-solid fa-file-import"></i>Import Apple Health data</button>
-  <div id="import-status" class="text-xs muted" aria-live="polite"></div>
-  <div class="text-xs muted leading-relaxed"><strong>Supported summaries:</strong> steps, active energy, walking/running distance, heart rate, blood oxygen, body mass and sleep duration where the export contains supported records. Import is based on the selected export file; it is not a live or automatic HealthKit connection. Re-importing the same export may create duplicate entries, so review history before importing it again.</div>
+ <div><h2 class="text-2xl font-bold">Import Health Data</h2><p class="text-sm muted mt-1">Bring Apple Health or Samsung Health history into one private dashboard.</p></div>
+ <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+  <div class="panel p-5 space-y-4"><div class="flex gap-3 items-start"><div class="w-11 h-11 rounded-xl bg-slate-100 dark:bg-slate-700 grid place-items-center text-xl"><i class="fa-brands fa-apple"></i></div><div><h3 class="font-bold">Apple Health</h3><p class="text-xs muted mt-1">Health app → profile picture → Export All Health Data → Export. Extract the ZIP and select export.xml.</p></div></div><input type="file" id="apple-file" accept=".xml,text/xml,application/xml" class="field"><button class="btn btn-primary" onclick="importAppleHealth()"><i class="fa-solid fa-file-import"></i>Import Apple Health</button><div id="import-status" class="text-xs muted" aria-live="polite"></div></div>
+  <div class="panel p-5 space-y-4"><div class="flex gap-3 items-start"><div class="w-11 h-11 rounded-xl bg-slate-100 dark:bg-slate-700 grid place-items-center text-xl"><i class="fa-solid fa-mobile-screen-button"></i></div><div><h3 class="font-bold">Samsung Health</h3><p class="text-xs muted mt-1">Samsung Health → Settings → Download personal data. Select the ZIP export. The importer reads supported JSON/CSV files inside it.</p></div></div><input type="file" id="samsung-file" accept=".zip,.json,.csv,application/zip,application/json,text/csv" class="field"><button class="btn btn-primary" onclick="importSamsungHealth()"><i class="fa-solid fa-file-import"></i>Import Samsung Health</button><div id="samsung-import-status" class="text-xs muted" aria-live="polite"></div></div>
  </div>
- <div class="panel p-5"><h3 class="font-bold mb-2">Why live automatic collection is unavailable in this website</h3><p class="text-sm muted leading-relaxed">Apple Health data is protected by iOS HealthKit permissions. A normal HTML website hosted on GitHub Pages cannot request HealthKit access or continuously read Apple Watch measurements. Live collection needs a native iOS app with HealthKit entitlements and user-granted permissions. This web version provides a private, manual export/import workflow instead.</p></div>
+ <div class="rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 p-3 text-xs text-amber-900 dark:text-amber-200"><i class="fa-solid fa-lock mr-1"></i>Files are processed locally in this browser. Health records stay in this browser and are not uploaded to GitHub. Never commit personal health exports or backups to the public repository.</div>
+ <div class="panel p-5 space-y-2"><h3 class="font-bold">Supported data (when present in exports)</h3><p class="text-sm muted">Steps, calories/energy, distance, exercise, floors, sleep, heart rate, blood oxygen, blood pressure, weight, temperature, glucose and other supported measurements. Samsung export layouts vary by app version; the importer will report files it cannot recognise.</p><p class="text-xs muted">Imports are manual. This website cannot connect live to Apple HealthKit or Samsung Health in the background. Re-importing the same export can create duplicate entries.</p></div>
+ <div class="panel p-5"><h3 class="font-bold mb-2">Why live automatic collection is unavailable</h3><p class="text-sm muted leading-relaxed">Apple Health requires HealthKit access in a native iOS app. Samsung Health data access requires supported Samsung integrations and user permissions. A normal GitHub Pages website cannot request those permissions or continuously collect sensor data. This version supports private manual imports from both platforms.</p></div>
 </section>
 
 <section id="page-backup" class="page hidden space-y-5">
@@ -313,6 +312,12 @@ function importAppleHealth(){
     else if(type==='HKQuantityTypeIdentifierBodyMass'){key='Weight';kind='record';if(unit==='lb')v*=0.45359237;else if(unit==='g')v/=1000;outUnit='kg';average=true}
     else if(type==='HKQuantityTypeIdentifierBodyTemperature'){key='Temperature';kind='record';if(unit==='degf')v=(v-32)*5/9;outUnit='°C';average=true}
     else if(type==='HKQuantityTypeIdentifierRespiratoryRate'){key='Respiratory Rate';kind='record';outUnit='breaths/min';average=true}
+    else if(type==='HKQuantityTypeIdentifierBloodGlucose'){key='Blood Glucose';kind='record';outUnit=unit||'mg/dL';average=true}
+    else if(type==='HKQuantityTypeIdentifierHeartRateVariabilitySDNN'){key='Heart Rate Variability';kind='record';outUnit='ms';average=true}
+    else if(type==='HKQuantityTypeIdentifierVO2Max'){key='VO₂ Max';kind='record';outUnit=unit||'mL/kg/min';average=true}
+    else if(type==='HKQuantityTypeIdentifierBodyFatPercentage'){key='Body Fat';kind='record';v*=100;outUnit='%';average=true}
+    else if(type==='HKQuantityTypeIdentifierLeanBodyMass'){key='Lean Body Mass';kind='record';if(unit==='lb')v*=0.45359237;outUnit='kg';average=true}
+    else if(type==='HKQuantityTypeIdentifierHeight'){key='Height';kind='record';if(unit==='cm')v/=100;outUnit='m';average=true}
     else if(type==='HKQuantityTypeIdentifierBloodPressureSystolic'){key='Systolic BP';kind='record';outUnit='mmHg';average=true}
     else if(type==='HKQuantityTypeIdentifierBloodPressureDiastolic'){key='Diastolic BP';kind='record';outUnit='mmHg';average=true}
     else if(type==='HKQuantityTypeIdentifierFlightsClimbed'){key='Flights Climbed';outUnit='flights'}
@@ -345,6 +350,38 @@ function importAppleHealth(){
  reader.onerror=()=>{status.textContent='The browser could not read this file. Try selecting export.xml again.'};
  reader.readAsText(file);
 }
+
+function importSamsungHealth(){
+ const file=document.getElementById('samsung-file').files[0],status=document.getElementById('samsung-import-status');
+ if(!file){status.textContent='Please select the Samsung Health ZIP export (or a JSON/CSV file).';return}
+ status.textContent='Reading Samsung Health export locally…';
+ const readText=f=>new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||''));r.onerror=()=>reject(Error('Could not read '+f.name));r.readAsText(f)});
+ const norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+ const dateOf=o=>{for(const [k,v] of Object.entries(o||{})){if(/start.?time|start.?date|create.?time|date.?time|timestamp|date$/i.test(k)&&v){let d=typeof v==='number'?new Date(v<1e12?v*1000:v):new Date(String(v).replace(' ','T'));if(!isNaN(d))return d.toISOString().slice(0,10)}}return null};
+ const number=(o,patterns)=>{for(const [k,v] of Object.entries(o||{})){if(patterns.some(p=>p.test(norm(k)))&&v!==''&&v!==null&&Number.isFinite(Number(v)))return Number(v)}return null};
+ const rowsFrom=x=>Array.isArray(x)?x:(x&&typeof x==='object'?Object.values(x).filter(v=>v&&typeof v==='object'):[]);
+ const records=[],activities=[],seen=new Set();
+ const add=(kind,type,val,unit,day,sourceFile)=>{if(!day||!Number.isFinite(val)||val<0)return;const sig=[kind,type,day,Math.round(val*100)/100].join('|');if(seen.has(sig))return;seen.add(sig);const entry={id:uid(),type,value:Number(val.toFixed(2)),unit,date:kind==='record'?day+'T12:00:00':day,note:'Imported from '+sourceFile,source:'Samsung Health import'};(kind==='record'?records:activities).push(entry)};
+ const process=(obj,path)=>{const fileName=norm(path),rows=rowsFrom(obj);for(const row of rows){if(!row||typeof row!=='object')continue;const day=dateOf(row);if(!day)continue;const keys=Object.keys(row).map(norm).join(' '),label=fileName+' '+keys;let v=null,u='',t='',kind='activity';
+  if(/stepcount|stepdaily|steps/.test(label)){v=number(row,[/^(count|stepcount|steps|totalsteps)$/,/stepcount/]);t='Steps';u='steps'}
+  else if(/calorie|energy/.test(label)){v=number(row,[/^(calorie|calories|calorieburned|activecalories|activeenergy)$/,/calorie/]);t='Active Energy';u='kcal'}
+  else if(/distance/.test(label)){v=number(row,[/^(distance|totaldistance|walkingdistance)$/,/distance/]);t='Walking Distance';u='km';if(v!==null&&v>100)v/=1000}
+  else if(/floors|floorclimb/.test(label)){v=number(row,[/^(floors|floor|count|floorclimbed)$/,/floor/]);t='Flights Climbed';u='flights'}
+  else if(/exercise|workout|activity/.test(fileName)){v=number(row,[/^(duration|exercisetime|durationminute|time)$/,/duration/]);t='Exercise Minutes';u='min';if(v!==null&&v>1000)v/=60000}
+  else if(/sleep/.test(label)){v=number(row,[/^(sleepduration|duration|sleeptime|totalsleep)$/,/sleepduration/]);t='Sleep';u='hours';if(v!==null&&v>24)v/=3600}
+  else if(/heartrate|heartrate/.test(label)){v=number(row,[/^(heartrate|bpm|meanheartrate)$/,/heartrate/]);t='Heart Rate';u='bpm';kind='record'}
+  else if(/bloodoxygen|spo2|oxygen/.test(label)){v=number(row,[/^(spo2|oxygen|bloodoxygen|oxygenlevel)$/,/spo2/]);t='SpO₂';u='%';if(v!==null&&v<=1)v*=100;kind='record'}
+  else if(/weight/.test(label)){v=number(row,[/^(weight|bodyweight)$/,/weight/]);t='Weight';u='kg';kind='record'}
+  else if(/bloodpressure/.test(label)){const sys=number(row,[/^(systolic|systolicbp)$/]),dia=number(row,[/^(diastolic|diastolicbp)$/]);if(sys!==null)add('record','Systolic BP',sys,'mmHg',day,path);if(dia!==null)add('record','Diastolic BP',dia,'mmHg',day,path);continue}
+  else continue;if(v!==null)add(kind,t,v,u,day,path);
+ }};
+ const parseFile=async(name,content)=>{const ext=name.split('.').pop().toLowerCase();if(ext==='json'){try{process(JSON.parse(content),name)}catch(e){}}else if(ext==='csv'){const lines=content.split(/\r?\n/).filter(Boolean);if(lines.length<2)return;const headers=lines[0].split(',').map(x=>x.replace(/^"|"$/g,'').trim());for(const line of lines.slice(1)){const vals=line.split(',');const row={};headers.forEach((k,i)=>row[k]=(vals[i]||'').replace(/^"|"$/g,''));process([row],name)}}};
+ try{let files=[];if(/\.zip$/i.test(file.name)){if(!window.JSZip)throw Error('ZIP reader did not load. Connect to the internet, refresh, and try again.');const zip=await JSZip.loadAsync(file);const entries=Object.values(zip.files).filter(x=>!x.dir&&/\.(json|csv)$/i.test(x.name));for(const entry of entries){await parseFile(entry.name,await entry.async('string'));files.push(entry.name)}}else{await parseFile(file.name,await readText(file));files.push(file.name)}
+  if(!activities.length&&!records.length){status.textContent='No supported Samsung Health rows were recognised in '+files.length+' JSON/CSV files. Samsung export layouts vary by app version. No data was added. Please share only the filenames inside the ZIP (not your health data), so I can adapt the importer.';return}
+  db.activities.push(...activities);db.records.push(...records);save();renderAll();status.textContent='Samsung import complete: '+activities.length+' activity entries and '+records.length+' measurement entries added from '+files.length+' files. Review dates and values. Do not import the same export again.';
+ }catch(err){status.textContent='Samsung import failed: '+err.message}
+}
+
 function clearAllData(){if(!confirm('Permanently delete all Health Monitor records, activities and local snapshots from this browser? Download a backup first if needed.'))return;if(!confirm('Final confirmation: delete all local health data?'))return;db=blankDB();localStorage.removeItem(SNAP_KEY);save();renderAll();alert('Local health data deleted.')}
 initTheme();document.getElementById('r-date').value=localDateTime();document.getElementById('a-date').value=today();dailySnapshot();renderAll();document.getElementById('filter-from').value=new Date(Date.now()-30*86400000).toISOString().slice(0,10);document.getElementById('filter-to').value=today();renderTrends();
 </script>
