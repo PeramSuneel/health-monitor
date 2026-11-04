@@ -193,29 +193,10 @@ main{max-width:1580px!important;padding:clamp(18px,3vw,42px)!important}
 <section id="page-dashboard" class="page space-y-6">
  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
   <div><p class="text-xs uppercase tracking-wider font-semibold text-brand-600 dark:text-brand-400">Personal health overview</p><h2 class="text-2xl font-bold mt-1">Your health, in focus</h2><p class="text-sm muted mt-1">A clearer view of your activity, sleep and recorded health measurements.</p></div>
-  <div class="text-xs muted" id="dashboard-date"></div>
+  <div class="flex flex-wrap items-center gap-2"><label for="dashboard-date-picker" class="text-sm font-semibold"><i class="fa-regular fa-calendar mr-2"></i>Select date</label><input id="dashboard-date-picker" class="field" type="date" onchange="setDashboardDate(this.value)" style="max-width:190px"></div>
  </div>
- <div class="panel p-4 md:p-5">
-  <div class="flex flex-wrap items-center gap-3">
-   <label for="dashboard-date-picker" class="text-sm font-semibold"><i class="fa-regular fa-calendar mr-2"></i>Select dashboard date</label>
-   <input id="dashboard-date-picker" class="field" type="date" onchange="setDashboardDate(this.value)" style="max-width:210px">
-  </div>
-  <div class="detail-nav-group"><div class="detail-nav-title">Days</div><div id="dashboard-day-strip" class="detail-chip-strip"></div></div>
-  <div class="detail-nav-group"><div class="detail-nav-title">Weeks · ISO week numbers</div><div id="dashboard-week-strip" class="detail-chip-strip"></div></div>
-  <div class="detail-nav-group"><div class="detail-nav-title">Months</div><div id="dashboard-month-strip" class="detail-chip-strip"></div></div>
- </div>
- <div class="panel p-4 md:p-5 dash-hero">
-  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-   <div><div class="text-xs font-semibold uppercase tracking-wide muted">Tracking overview</div><div id="health-status-title" class="text-xl font-bold mt-1">Your health tracking overview</div><p id="health-status-copy" class="text-sm muted mt-1">Your recorded health data, activity patterns and trends in one place.</p></div>
-   <div class="status-orbit" aria-hidden="true"><i class="fa-solid fa-heart-pulse"></i></div>
-  </div>
-  <div class="mt-4 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900 p-3 text-xs text-blue-900 dark:text-blue-200"><i class="fa-solid fa-user-doctor mr-2"></i>This dashboard supports health tracking; it cannot diagnose whether you are healthy. Interpretation depends on age, symptoms, medical history, medicines and measurement conditions.</div>
- </div>
- <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-  <div><h3 class="font-bold text-base">Your activity summary</h3><p id="period-caption" class="text-xs muted mt-1">Today's recorded activity</p></div>
-  <div class="inline-flex rounded-lg bg-slate-100 dark:bg-slate-800 p-1 gap-1" role="group" aria-label="Summary period">
-   <button class="period-btn active" data-period="daily" onclick="setDashboardPeriod('daily')">Daily</button><button class="period-btn" data-period="weekly" onclick="setDashboardPeriod('weekly')">Weekly</button><button class="period-btn" data-period="monthly" onclick="setDashboardPeriod('monthly')">Monthly</button>
-  </div>
+ <div class="flex items-center justify-between gap-3">
+  <div><h3 class="font-bold text-base">Your activity summary</h3><p id="period-caption" class="text-xs muted mt-1">Recorded data for selected date</p></div>
  </div>
  <div class="grid metric-grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
   <div class="panel metric-card p-4"><div class="flex justify-between items-center"><span class="text-xs font-semibold muted uppercase">Steps</span><span class="dash-icon text-blue-600"><i class="fa-solid fa-shoe-prints"></i></span></div><div id="m-steps" class="text-2xl md:text-3xl font-bold mt-3">—</div><div id="m-steps-note" class="text-xs muted mt-1">steps</div></div>
@@ -378,41 +359,20 @@ function latestRecord(type){return db.records.filter(r=>r.type===type).sort((a,b
 let dashboardPeriod='daily';
 let dashboardSelectedDate=hmDayKey(new Date());
 let dashboardChartMetric='Steps';
-function setDashboardPeriod(period){dashboardPeriod=period;document.querySelectorAll('.period-btn').forEach(b=>b.classList.toggle('active',b.dataset.period===period));renderDashboard();}
-function setDashboardDate(value){if(!value)return;dashboardSelectedDate=value;dashboardPeriod='daily';renderDashboard();}
-function selectDashboardWeek(start,end){dashboardSelectedDate=end;dashboardPeriod='weekly';renderDashboard();}
-function selectDashboardMonth(start,end){dashboardSelectedDate=end;dashboardPeriod='monthly';renderDashboard();}
+function setDashboardDate(value){if(!value)return;dashboardSelectedDate=value;renderDashboard();}
 function dashboardWindow(){
- const selected=new Date(dashboardSelectedDate+'T12:00:00'),todayKey=hmDayKey(new Date());
- let start=new Date(selected),end=new Date(selected);
- if(dashboardPeriod==='weekly'){start.setDate(start.getDate()-((start.getDay()+6)%7));end=new Date(start);end.setDate(end.getDate()+6);}
- if(dashboardPeriod==='monthly'){start=new Date(selected.getFullYear(),selected.getMonth(),1);end=new Date(selected.getFullYear(),selected.getMonth()+1,0);}
- const key=d=>hmDayKey(d);
- if(key(end)>todayKey)end=new Date(todayKey+'T12:00:00');
- return {start:key(start),end:key(end),days:Math.max(1,Math.round((end-start)/86400000)+1),startDate:start,endDate:end};
-}
-function renderDashboardNavigation(){
- const day=document.getElementById('dashboard-day-strip'),week=document.getElementById('dashboard-week-strip'),month=document.getElementById('dashboard-month-strip'),input=document.getElementById('dashboard-date-picker');
- if(!day||!week||!month||!input)return;
- const todayKey=hmDayKey(new Date());input.value=dashboardSelectedDate;input.max=todayKey;
- const dayKeys=Array.from({length:7},(_,i)=>addDateDays(dashboardSelectedDate,i-6)).filter(k=>k<=todayKey);
- day.innerHTML=dayKeys.map(k=>{const d=new Date(k+'T12:00:00');return '<button class="detail-date-chip '+(k===dashboardSelectedDate&&dashboardPeriod==='daily'?'active':'')+'" onclick="setDashboardDate(\\''+k+'\\')"><span class="chip-main">'+d.toLocaleDateString(undefined,{weekday:'short'})+'</span><span class="chip-sub">'+d.toLocaleDateString(undefined,{day:'2-digit',month:'short'})+'</span></button>'}).join('');
- const anchor=new Date(dashboardSelectedDate+'T12:00:00'),monday=new Date(anchor);monday.setDate(monday.getDate()-((monday.getDay()+6)%7));
- const weeks=Array.from({length:8},(_,i)=>{const start=new Date(monday);start.setDate(start.getDate()-(7*(7-i)));const end=new Date(start);end.setDate(end.getDate()+6);const endKey=hmDayKey(end);return {start,end:endKey>todayKey?todayKey:endKey,info:isoWeekInfo(start),active:dashboardPeriod==='weekly'&&dashboardSelectedDate>=hmDayKey(start)&&dashboardSelectedDate<=endKey};});
- week.innerHTML=weeks.map(w=>'<button class="detail-date-chip '+(w.active?'active':'')+'" onclick="selectDashboardWeek(\\''+hmDayKey(w.start)+'\\',\\''+w.end+'\\')"><span class="chip-main">W'+String(w.info.week).padStart(2,'0')+'</span><span class="chip-sub">'+w.start.toLocaleDateString(undefined,{day:'2-digit',month:'short'})+'</span></button>').join('');
- const base=new Date(anchor.getFullYear(),anchor.getMonth(),1),months=Array.from({length:12},(_,i)=>new Date(base.getFullYear(),base.getMonth()-(11-i),1));
- month.innerHTML=months.map(d=>{const start=hmDayKey(d),last=new Date(d.getFullYear(),d.getMonth()+1,0),endKey=hmDayKey(last),end=endKey>todayKey?todayKey:endKey,active=dashboardPeriod==='monthly'&&dashboardSelectedDate.slice(0,7)===start.slice(0,7);return '<button class="detail-date-chip '+(active?'active':'')+'" onclick="selectDashboardMonth(\\''+start+'\\',\\''+end+'\\')"><span class="chip-main">'+d.toLocaleDateString(undefined,{month:'short'})+'</span><span class="chip-sub">'+d.getFullYear()+'</span></button>'}).join('');
+ const selected=new Date(dashboardSelectedDate+'T12:00:00');
+ return {start:dashboardSelectedDate,end:dashboardSelectedDate,days:1,startDate:selected,endDate:selected};
 }
 function periodActivities(type,window){return db.activities.filter(a=>a.type===type&&a.date.slice(0,10)>=window.start&&a.date.slice(0,10)<=window.end);}
 function sumActivity(type,window){return periodActivities(type,window).reduce((sum,a)=>sum+Number(a.value||0),0);}
 function avgPerRecordedDay(type,window){const rows=periodActivities(type,window);const days=new Set(rows.map(x=>x.date.slice(0,10))).size;return days?rows.reduce((s,x)=>s+Number(x.value||0),0)/days:0;}
 function renderDashboard(){
- const now=new Date(),w=dashboardWindow(),selected=new Date(dashboardSelectedDate+'T12:00:00'),periodName=dashboardPeriod==='daily'?'Selected day':dashboardPeriod==='weekly'?'Calendar week':'Calendar month';
- renderDashboardNavigation();
+ const now=new Date(),w=dashboardWindow(),selected=new Date(dashboardSelectedDate+'T12:00:00');
+ const dateInput=document.getElementById('dashboard-date-picker');if(dateInput){dateInput.value=dashboardSelectedDate;dateInput.max=hmDayKey(new Date());}
  document.getElementById('today-label').textContent=selected.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
- document.getElementById('dashboard-date').textContent=selected.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
- document.getElementById('period-caption').textContent=periodName+' · '+w.start+' to '+w.end;
- const daily=dashboardPeriod==='daily';
+ document.getElementById('period-caption').textContent='Recorded data for '+selected.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+ const daily=true;
  const steps=sumActivity('Steps',w),energy=sumActivity('Active Energy',w),dist=sumActivity('Walking Distance',w),sleep=avgPerRecordedDay('Sleep',w),water=avgPerRecordedDay('Water',w),exercise=sumActivity('Exercise Minutes',w),flights=sumActivity('Flights Climbed',w);
  const rhr=latestRecord('Resting Heart Rate');
  const set=(id,value,note)=>{document.getElementById(id).textContent=value;const n=document.getElementById(id+'-note');if(n&&note)n.textContent=note};
