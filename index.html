@@ -99,6 +99,60 @@ thead th:last-child{border-top-right-radius:10px}
 @media(max-width:767px){#sidebar{background:var(--sidebar)!important}main{padding:16px!important}.metric-card{min-height:126px;padding:14px!important}.panel{border-radius:15px!important}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
+
+/* HEALTH MONITOR — polished wearable-inspired interface */
+:root{--app-bg:#f3f5fa;--surface:#fff;--surface-soft:#f6f8fc;--line:#e7eaf2;--ink:#172033;--muted-ink:#778198;--accent:#5965e8;--accent-strong:#414dcc;--accent-soft:#eef0ff;--shadow:0 12px 34px rgba(36,48,91,.07);--radius:22px}
+html.dark{--app-bg:#090f1c;--surface:#121b2b;--surface-soft:#182337;--line:#26334a;--ink:#f2f5ff;--muted-ink:#9aa8c0;--accent:#91a0ff;--accent-strong:#aeb8ff;--accent-soft:#222d4b;--shadow:0 14px 38px rgba(0,0,0,.24);color-scheme:dark}
+body{background:var(--app-bg)!important;color:var(--ink)!important;transition:background .35s ease,color .35s ease}
+#sidebar,header,.panel,.metric-card,.vital-tile,.action-item,.field,.btn,.nav-btn{transition:background .3s ease,border-color .3s ease,color .3s ease,box-shadow .3s ease}
+#sidebar{background:var(--surface)!important;border-color:var(--line)!important;color:var(--muted-ink)!important}
+#sidebar .font-bold.text-white{color:var(--ink)!important}#sidebar .text-slate-400{color:var(--muted-ink)!important}
+header{background:color-mix(in srgb,var(--surface) 88%,transparent)!important;border-color:var(--line)!important}
+main{max-width:1580px!important;padding:clamp(18px,3vw,42px)!important}
+.panel{background:var(--surface)!important;border:1px solid var(--line)!important;border-radius:var(--radius)!important;box-shadow:var(--shadow)!important}
+.metric-card{position:relative;isolation:isolate;overflow:hidden;min-height:158px;border:1px solid var(--line)!important;border-radius:23px!important;background:linear-gradient(145deg,var(--surface),var(--surface-soft))!important;padding:20px!important;box-shadow:var(--shadow)!important;cursor:pointer}
+.metric-card:after{content:"";position:absolute;width:145px;height:145px;border-radius:50%;right:-62px;bottom:-83px;background:radial-gradient(circle,rgba(104,124,255,.16),transparent 70%);z-index:-1;transition:transform .45s ease}
+.metric-card:hover{transform:translateY(-5px) scale(1.008);box-shadow:0 18px 40px rgba(44,56,111,.13)!important}
+.metric-card:hover:after{transform:scale(1.45)}
+.metric-card .dash-icon{width:44px;height:44px;border-radius:15px;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
+.dash-hero{border:0!important;background:linear-gradient(115deg,#4d5fe4 0%,#7967e9 52%,#a36bd9 100%)!important;color:white!important;box-shadow:0 20px 46px rgba(83,87,205,.24)!important;border-radius:26px!important}
+.dash-hero .muted,.dash-hero p,.dash-hero .text-xs{color:rgba(255,255,255,.82)!important}
+.dash-hero .status-orbit{background:rgba(255,255,255,.18)!important;color:white!important;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.22)}
+.dash-hero .bg-blue-50{background:rgba(255,255,255,.13)!important;border-color:rgba(255,255,255,.2)!important;color:white!important}
+.nav-btn{color:var(--muted-ink)!important;border-radius:13px!important;padding:12px 14px!important}
+.nav-btn:hover{background:var(--surface-soft)!important;color:var(--ink)!important}
+.nav-btn.active{background:linear-gradient(110deg,#5867e8,#8370ec)!important;color:white!important;box-shadow:0 8px 18px rgba(92,103,225,.2)!important}
+.btn-primary{background:linear-gradient(110deg,#5867e8,#8370ec)!important;color:#fff!important;border:0!important}
+.btn-primary:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.btn-secondary,.field{background:var(--surface-soft)!important;color:var(--ink)!important;border-color:var(--line)!important}
+.muted,.text-slate-500{color:var(--muted-ink)!important}
+.period-btn{color:var(--muted-ink)!important;border-radius:10px!important}
+.period-btn.active,.tab-active{background:linear-gradient(110deg,#5867e8,#8370ec)!important;color:#fff!important;box-shadow:0 5px 13px rgba(92,103,225,.2)!important}
+.vital-tile,.action-item{background:var(--surface-soft)!important;border-color:var(--line)!important;border-radius:15px!important}
+.goal-fill{background:linear-gradient(90deg,#5bd6b0,#4b8de8)!important}
+.bar-fill{background:linear-gradient(180deg,#a68bff,#5369e8)!important}
+#page-detail .panel{overflow:hidden}
+.detail-hero{padding:24px;border-radius:24px;background:linear-gradient(125deg,#4f62e8,#8a6ce6);color:#fff;box-shadow:0 18px 42px rgba(80,91,209,.2)}
+.detail-hero .muted{color:rgba(255,255,255,.78)!important}
+.detail-stat{background:var(--surface-soft);border:1px solid var(--line);border-radius:17px;padding:15px;min-width:0}
+.sleep-track{height:190px;display:flex;align-items:stretch;gap:3px;padding:18px 8px 8px;border-radius:17px;background:var(--surface-soft);overflow:hidden}
+.sleep-segment{flex:1;min-width:4px;border-radius:7px;position:relative;animation:stageIn .65s cubic-bezier(.2,.8,.2,1) both;transform-origin:bottom}
+.sleep-segment.deep{background:linear-gradient(180deg,#6c5ce7,#4938b8)}
+.sleep-segment.rem{background:linear-gradient(180deg,#c084fc,#9161d8)}
+.sleep-segment.core{background:linear-gradient(180deg,#6bb6ff,#4586dc)}
+.sleep-segment.awake{background:linear-gradient(180deg,#ffb66d,#ef8757)}
+.sleep-segment.inbed{background:linear-gradient(180deg,#aab4c7,#77849b)}
+.sleep-legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted-ink)}
+.sleep-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.trend-bars{height:190px;display:flex;align-items:end;gap:8px;padding:12px 4px 0}
+.trend-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:end;height:100%;gap:7px}
+.trend-bar{width:min(100%,30px);min-height:3px;border-radius:9px 9px 4px 4px;background:linear-gradient(180deg,#a18cff,#5968e8);animation:barGrow .7s ease both}
+.trend-label{font-size:10px;color:var(--muted-ink);white-space:nowrap}
+.detail-list-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+@keyframes stageIn{from{transform:scaleY(.08);opacity:.25}to{transform:scaleY(1);opacity:1}}
+@media(max-width:640px){.metric-card{min-height:135px;padding:15px!important}.sleep-track{height:155px;gap:2px}.trend-bars{gap:4px}}
+@media(prefers-reduced-motion:reduce){.metric-card,.metric-card:after,.sleep-segment,.trend-bar{animation:none!important;transition:none!important}}
+
 </style>
 </head>
 <body class="min-h-full bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors">
@@ -178,7 +232,7 @@ thead th:last-child{border-top-right-radius:10px}
 <section id="page-detail" class="page hidden space-y-5">
  <div><button onclick="showPage('dashboard')" class="text-sm font-semibold mb-3" style="color:var(--accent)"><i class="fa-solid fa-arrow-left mr-2"></i>Back to dashboard</button><h2 id="detail-title" class="text-2xl font-bold">Metric details</h2><p id="detail-subtitle" class="text-sm muted mt-1"></p>
  <div class="inline-flex rounded-xl p-1 gap-1 mt-4" style="background:var(--surface-soft);border:1px solid var(--line)"><button class="period-btn active" data-detail-period="daily" onclick="setDetailPeriod('daily')">Day</button><button class="period-btn" data-detail-period="weekly" onclick="setDetailPeriod('weekly')">Week</button><button class="period-btn" data-detail-period="monthly" onclick="setDetailPeriod('monthly')">Month</button></div></div>
- <div id="detail-summary" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
+ <div id="detail-summary" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div><div id="detail-visual"></div>
  <div class="panel p-5"><h3 class="font-bold">Breakdown</h3><p class="text-xs muted mt-1 mb-4">Only values present in your watch exports are shown.</p><div id="detail-breakdown" class="space-y-3"></div></div>
  <div class="panel p-5"><h3 class="font-bold mb-3">History & source records</h3><div id="detail-history" class="overflow-x-auto"></div></div>
  <p class="text-xs muted">Apple and Samsung may classify the same metric differently. Source labels are retained; missing values are never estimated.</p>
@@ -420,7 +474,7 @@ function importAppleHealth(){
      const end=n.getAttribute('endDate'),mins=(new Date(end)-new Date(start))/60000;
      if(!(mins>0&&mins<1440)){skipped++;continue}
      if(/InBed/i.test(val)){key='In Bed'}else if(/Awake/i.test(val)){key='Awake'}else if(/Deep/i.test(val)){key='Deep Sleep'}else if(/REM/i.test(val)){key='REM Sleep'}else if(/Core/i.test(val)){key='Core Sleep'}else if(/Asleep|Unspecified/i.test(val)){key='Sleep'}else continue;
-     v=mins/60;outUnit='hours';if(['Deep Sleep','REM Sleep','Core Sleep','Sleep'].includes(key))add(day,'Sleep','activity',v,'hours');
+     v=mins/60;outUnit='hours';if(['Deep Sleep','REM Sleep','Core Sleep','Sleep'].includes(key))add(day,'Sleep','activity',v,'hours');if(['Awake','Deep Sleep','REM Sleep','Core Sleep'].includes(key)){db.activities.push({id:uid(),type:'Sleep Stage: '+key,value:Number((mins/60).toFixed(3)),unit:'hours',date:start,note:'end:'+end,source:'Apple Health sleep-stage import'});}
     }else continue;
     if(value===null&&type!=='HKCategoryTypeIdentifierSleepAnalysis'){skipped++;continue}
     if(!Number.isFinite(v)){skipped++;continue}
@@ -479,5 +533,47 @@ async function importSamsungHealth(){
 
 function clearAllData(){if(!confirm('Permanently delete all Health Monitor records, activities and local snapshots from this browser? Download a backup first if needed.'))return;if(!confirm('Final confirmation: delete all local health data?'))return;db=blankDB();localStorage.removeItem(SNAP_KEY);save();renderAll();alert('Local health data deleted.')}
 initTheme();bindMetricCards();document.getElementById('r-date').value=localDateTime();document.getElementById('a-date').value=today();dailySnapshot();renderAll();document.getElementById('filter-from').value=new Date(Date.now()-30*86400000).toISOString().slice(0,10);document.getElementById('filter-to').value=today();renderTrends();
+
+/* Enhanced metric detail views and sleep-stage timeline */
+function hmDay(d){return String(d).slice(0,10)}
+function hmMetricRows(types,w){return db.activities.filter(x=>types.includes(x.type)&&hmDay(x.date)>=w.start&&hmDay(x.date)<=w.end)}
+function hmDayKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function hmChartFor(types,w,unit){
+ const days=[];for(let i=0;i<w.days;i++){const d=new Date(w.startDate);d.setDate(d.getDate()+i);const key=hmDayKey(d);const value=db.activities.filter(x=>types.includes(x.type)&&hmDay(x.date)===key).reduce((a,x)=>a+Number(x.value||0),0);days.push({key,value,label:w.days===1?'Today':d.toLocaleDateString(undefined,{weekday:'short'})})}
+ const max=Math.max(1,...days.map(x=>x.value));
+ return '<div class="trend-bars">'+days.map(x=>'<div class="trend-col"><div class="trend-bar" title="'+x.key+': '+fmt(x.value,1)+' '+unit+'" style="height:'+Math.max(2,x.value/max*100)+'%;animation-delay:'+Math.min(300,days.indexOf(x)*18)+'ms"></div><div class="trend-label">'+escapeHTML(x.label)+'</div></div>').join('')+'</div>';
+}
+function hmSleepTimeline(w){
+ const stages=db.activities.filter(x=>/^Sleep Stage: /.test(x.type)&&hmDay(x.date)>=w.start&&hmDay(x.date)<=w.end).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+ if(!stages.length)return '<div class="rounded-2xl p-5 text-center" style="background:var(--surface-soft)"><div class="font-semibold">Sleep-stage timeline not available yet</div><p class="text-sm muted mt-2">Import a fresh Apple Health export to include individual sleep-stage intervals. Samsung stage details will appear when its export provides timestamped stages. Daily totals already imported remain visible below.</p></div>';
+ const colors=s=>/Deep/i.test(s)?'deep':/REM/i.test(s)?'rem':/Core|Light|Asleep/i.test(s)?'core':/Awake/i.test(s)?'awake':'inbed';
+ const start=new Date(stages[0].date),end=Math.max(...stages.map(x=>new Date(x.note?.match(/end:(.+)$/)?.[1]||x.date).getTime()));
+ const blocks=stages.map(x=>{const st=new Date(x.date),en=new Date(x.note?.match(/end:(.+)$/)?.[1]||st.getTime()+Number(x.value)*3600000);return {stage:x.type.replace('Sleep Stage: ',''),start:st,end:en,mins:Math.max(1,(en-st)/60000)}}).filter(x=>x.mins>0&&x.mins<1440);
+ const total=blocks.reduce((a,x)=>a+x.mins,0),summary=['Deep Sleep','REM Sleep','Core Sleep','Awake'].map(name=>({name,mins:blocks.filter(x=>x.stage===name).reduce((a,x)=>a+x.mins,0)}));
+ return '<div class="sleep-track">'+blocks.map((x,i)=>'<div class="sleep-segment '+colors(x.stage)+'" title="'+escapeHTML(x.stage)+' · '+Math.round(x.mins)+' min · '+x.start.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})+'" style="height:'+Math.max(16,Math.min(100,x.mins/Math.max(...blocks.map(b=>b.mins))*100))+'%;align-self:flex-end;animation-delay:'+Math.min(i*25,500)+'ms"></div>').join('')+'</div><div class="flex justify-between text-xs muted mt-2"><span>'+start.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})+'</span><span>'+new Date(end).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})+'</span></div><div class="sleep-legend mt-4">'+summary.map(x=>'<span><i class="sleep-dot" style="background:'+({ 'Deep Sleep':'#5948c7','REM Sleep':'#a56bdc','Core Sleep':'#4b91e3','Awake':'#ef925f'}[x.name])+'"></i>'+x.name+' · '+(x.mins?Math.round(x.mins)+' min':'—')+'</span>').join('')+'</div>';
+}
+function renderMetricDetail(){
+ const cfg=detailConfig[detailMetric]||detailConfig.steps,w=detailRange(),types=cfg.types;
+ document.getElementById('detail-title').textContent=cfg.title;
+ document.getElementById('detail-subtitle').textContent='Your recorded '+cfg.title.toLowerCase()+' · '+w.start+' to '+w.end;
+ document.querySelectorAll('[data-detail-period]').forEach(b=>b.classList.toggle('active',b.dataset.detailPeriod===detailPeriod));
+ const rows=hmMetricRows(types,w),records=db.records.filter(x=>types.includes(x.type)&&hmDay(x.date)>=w.start&&hmDay(x.date)<=w.end);
+ const totalTypes=detailMetric==='sleep'?['Sleep']:detailMetric==='workouts'?['Workout Duration','Exercise Minutes']:types;
+ const total=rows.filter(x=>totalTypes.includes(x.type)).reduce((a,x)=>a+Number(x.value||0),0);
+ const days=new Set([...rows,...records].map(x=>hmDay(x.date))).size;
+ const totalLabel=detailMetric==='sleep'?'Total sleep':detailMetric==='workouts'?'Exercise duration':detailMetric==='heart'?'Samples recorded':'Total recorded';
+ const totalValue=detailMetric==='heart'?String(rows.length+records.length):fmt(total,1)+' '+cfg.unit;
+ document.getElementById('detail-summary').innerHTML=[['Activity entries',rows.length],['Measurements',records.length],[totalLabel,totalValue],['Days with data',days]].map(([a,b])=>'<div class="detail-stat"><div class="text-xs muted">'+a+'</div><div class="text-xl font-bold mt-2">'+b+'</div></div>').join('');
+ const graphTypes=detailMetric==='sleep'?['Sleep']:detailMetric==='steps'?['Steps']:detailMetric==='calories'?['Active Energy']:detailMetric==='workouts'?['Exercise Minutes','Workout Duration']:types;
+ const graph=detailMetric==='sleep'?hmSleepTimeline(w):hmChartFor(graphTypes,w,cfg.unit);
+ const graphTitle=detailMetric==='sleep'?'Sleep stages':detailMetric==='steps'?'Steps trend':detailMetric==='calories'?'Energy trend':detailMetric==='workouts'?'Workout duration trend':'Activity trend';
+ const chart=document.getElementById('detail-visual');if(chart)chart.innerHTML='<div class="panel p-5"><div class="flex items-center justify-between gap-3 mb-3"><div><h3 class="font-bold">'+graphTitle+'</h3><p class="text-xs muted mt-1">'+(detailPeriod==='daily'?'Selected day':detailPeriod==='weekly'?'Last 7 days':'Last 30 days')+' · based on imported records</p></div><span class="text-xs font-semibold" style="color:var(--accent)">'+cfg.unit+'</span></div>'+graph+'</div>';
+ const breakdown=document.getElementById('detail-breakdown');
+ const byType=types.map(t=>({type:t,items:rows.filter(x=>x.type===t),records:records.filter(x=>x.type===t)})).filter(x=>x.items.length||x.records.length);
+ breakdown.innerHTML=byType.length?byType.map(x=>{const sum=x.items.reduce((a,z)=>a+Number(z.value||0),0),unit=x.items[0]?.unit||x.records[0]?.unit||'';return '<div class="detail-list-row"><div><div class="font-semibold text-sm">'+escapeHTML(x.type)+'</div><div class="text-xs muted mt-1">'+x.items.length+' activity entries · '+x.records.length+' measurements</div></div><div class="text-lg font-bold">'+fmt(sum,1)+' <span class="text-xs muted font-normal">'+escapeHTML(unit)+'</span></div></div>'}).join(''):'<div class="py-6 text-center"><div class="font-semibold">No '+escapeHTML(cfg.title.toLowerCase())+' data recorded for this period</div><p class="text-sm muted mt-1">Import your watch data or add a record to see your personal trends.</p></div>';
+ const all=[...rows.map(x=>({...x,kind:'Activity'})),...records.map(x=>({...x,kind:'Measurement'}))].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+ document.getElementById('detail-history').innerHTML=tableHTML(['Type','Value','Date','Source','Notes'],all.map(x=>[escapeHTML(x.kind+' · '+x.type),escapeHTML(String(x.value))+' '+escapeHTML(x.unit||''),escapeHTML(String(x.date).replace('T',' ').slice(0,19)),escapeHTML(x.source||'Manual'),escapeHTML(x.note||'—')]));
+}
+
 </script>
 </body></html>
