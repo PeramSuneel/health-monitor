@@ -578,6 +578,7 @@ function hmSleepTimeline(w){
 }
 function renderMetricDetail(){
  const cfg=detailConfig[detailMetric]||detailConfig.steps,w=detailRange(),types=cfg.types;
+ renderDetailNavigation();
  document.getElementById('detail-title').textContent=cfg.title;
  document.getElementById('detail-subtitle').textContent=(detailPeriod==='daily'?'Daily report · ':'Date range · ')+w.start+' to '+w.end+(detailMetric==='sleep'?' · Sleep session ending on the selected date':'');
  document.querySelectorAll('[data-detail-period]').forEach(b=>b.classList.toggle('active',b.dataset.detailPeriod===detailPeriod));
