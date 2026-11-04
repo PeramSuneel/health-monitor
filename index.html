@@ -474,7 +474,7 @@ function importAppleHealth(){
      const end=n.getAttribute('endDate'),mins=(new Date(end)-new Date(start))/60000;
      if(!(mins>0&&mins<1440)){skipped++;continue}
      if(/InBed/i.test(val)){key='In Bed'}else if(/Awake/i.test(val)){key='Awake'}else if(/Deep/i.test(val)){key='Deep Sleep'}else if(/REM/i.test(val)){key='REM Sleep'}else if(/Core/i.test(val)){key='Core Sleep'}else if(/Asleep|Unspecified/i.test(val)){key='Sleep'}else continue;
-     v=mins/60;outUnit='hours';if(['Deep Sleep','REM Sleep','Core Sleep','Sleep'].includes(key))add(day,'Sleep','activity',v,'hours');if(['Awake','Deep Sleep','REM Sleep','Core Sleep'].includes(key)){db.activities.push({id:uid(),type:'Sleep Stage: '+key,value:Number((mins/60).toFixed(3)),unit:'hours',date:start,note:'end:'+end,source:'Apple Health sleep-stage import'});}
+     v=mins/60;outUnit='hours';if(['Deep Sleep','REM Sleep','Core Sleep','Sleep'].includes(key))add(day,'Sleep','activity',v,'hours');if(['Awake','Deep Sleep','REM Sleep','Core Sleep'].includes(key)){const stageType='Sleep Stage: '+key,stageNote='end:'+end;const exists=db.activities.some(a=>a.type===stageType&&a.date===start&&a.note===stageNote);if(!exists)db.activities.push({id:uid(),type:stageType,value:Number((mins/60).toFixed(3)),unit:'hours',date:start,note:stageNote,source:'Apple Health sleep-stage import'});}
     }else continue;
     if(value===null&&type!=='HKCategoryTypeIdentifierSleepAnalysis'){skipped++;continue}
     if(!Number.isFinite(v)){skipped++;continue}
